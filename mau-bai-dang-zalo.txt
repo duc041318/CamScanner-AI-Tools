@@ -1,0 +1,139 @@
+=====================================================
+MẪU BÀI ĐĂNG ZALO - ĐẤT NỀN SÓC SƠN, HÀ NỘI
+Dùng cho hệ thống gửi tin nhắn hàng loạt Zalo Tool
+=====================================================
+
+Biến mẫu (template variables):
+- {ho_ten} = Họ tên khách hàng
+- {du_an} = Tên dự án
+- {gia} = Giá bán (VD: 1.2 tỷ, 15 triệu/m2)
+- {dien_tich} = Diện tích lô đất (VD: 100m2, 80-120m2)
+
+=====================================================
+BÀI 1: GIỚI THIỆU DỰ ÁN MỚI
+=====================================================
+
+Chào anh/chị {ho_ten} 👋
+
+Em vừa nhận được thông tin dự án đất nền HOT nhất Sóc Sơn - Hà Nội:
+
+🏡 Dự án: {du_an}
+📐 Diện tích: {dien_tich}
+💰 Giá chỉ từ: {gia}
+
+✅ Sổ đỏ trao tay - Pháp lý minh bạch
+✅ Hạ tầng đồng bộ: đường nhựa, điện, nước sạch
+✅ Gần trung tâm huyện Sóc Sơn, kết nối Nội Bài chỉ 15 phút
+✅ Quy hoạch rõ ràng, phù hợp xây nhà ở hoặc đầu tư
+
+Sóc Sơn đang là tâm điểm phát triển phía Bắc Hà Nội với loạt dự án hạ tầng lớn đang triển khai. Đây là cơ hội sở hữu đất nền giá tốt trước khi thị trường tăng giá 🚀
+
+👉 Anh/chị inbox em để nhận bảng giá chi tiết + bản đồ vị trí nhé!
+
+📞 Liên hệ ngay để được tư vấn miễn phí!
+
+=====================================================
+BÀI 2: CHIA SẺ KIẾN THỨC ĐẦU TƯ ĐẤT
+=====================================================
+
+Chào anh/chị {ho_ten} 👋
+
+💡 3 LÝ DO ĐẤT NỀN SÓC SƠN SẼ TĂNG GIÁ MẠNH TRONG 2-3 NĂM TỚI:
+
+1️⃣ Hạ tầng giao thông bứt phá
+Cao tốc, đường vành đai, mở rộng sân bay Nội Bài - tất cả đều đang đổ về Sóc Sơn. Hạ tầng đi trước, giá đất đi sau - quy luật bất biến!
+
+2️⃣ Giá còn ở mức "vùng trũng"
+So với các huyện ngoại thành khác như Đông Anh, Gia Lâm, đất Sóc Sơn hiện đang thấp hơn 30-50%. Đây chính là lợi thế cho người mua sớm.
+
+3️⃣ Quy hoạch lên quận
+Sóc Sơn nằm trong lộ trình đô thị hóa của Hà Nội. Khi lên quận, giá đất sẽ nhảy vọt - như những gì đã xảy ra ở Hoài Đức, Đông Anh.
+
+📌 Hiện em đang có một số lô đất nền tại {du_an}, diện tích {dien_tich}, giá chỉ {gia}. Rất phù hợp để đầu tư trung - dài hạn.
+
+👉 Anh/chị muốn em gửi phân tích chi tiết về tiềm năng khu vực không ạ? Inbox em nhé!
+
+=====================================================
+BÀI 3: URGENCY / KHAN HIẾM
+=====================================================
+
+🔥🔥🔥 THÔNG BÁO KHẨN - Anh/chị {ho_ten} ơi!
+
+Dự án {du_an} tại Sóc Sơn vừa mở bán đợt cuối cùng:
+
+📐 Diện tích: {dien_tich}
+💰 Giá: {gia}
+
+⚠️ CHỈ CÒN LẠI 5 LÔ CUỐI CÙNG ở vị trí đẹp nhất!
+
+Đợt trước 20 lô bán hết trong vòng 2 tuần. Đợt này chủ đầu tư chỉ giữ lại số lượng rất ít cho khách hàng VIP.
+
+🔑 Tại sao phải nhanh tay?
+- Giá đang giữ ở mức thấp nhất - đợt sau sẽ tăng 10-15%
+- Lô góc, lô mặt đường chính đã có người đặt cọc rồi
+- Ngân hàng hỗ trợ vay 70%, lãi suất ưu đãi chỉ áp dụng đến cuối tháng
+
+⏰ Ai đến trước được chọn trước, không giữ lô nếu không cọc!
+
+👉 Nhắn tin cho em NGAY để giữ chỗ trước khi hết ạ! Em sẽ gửi thông tin lô còn trống cho anh/chị.
+
+=====================================================
+BÀI 4: TESTIMONIAL / CÂU CHUYỆN THÀNH CÔNG
+=====================================================
+
+Chào anh/chị {ho_ten} 👋
+
+Em muốn chia sẻ câu chuyện thật của một khách hàng em đã tư vấn:
+
+📖 "Năm 2023, anh Minh (Cầu Giấy) mua 1 lô đất 100m2 ở Sóc Sơn với giá 1.1 tỷ. Nhiều người bảo anh 'điên' vì mua đất ngoại thành. Đến nay, lô đất đó đã được trả giá 1.6 tỷ - lãi hơn 500 triệu chỉ sau hơn 2 năm, tương đương hơn 45%!"
+
+Anh Minh chia sẻ: "Lúc đầu cũng lo, nhưng nhìn quy hoạch hạ tầng và lộ trình lên quận thì mình tin vào tiềm năng. Giờ thì mừng vì quyết định đúng lúc."
+
+💡 Bất động sản không chờ ai cả. Người mua đúng thời điểm sẽ là người hưởng lợi.
+
+Hiện em đang có các lô đất tương tự tại {du_an}:
+📐 Diện tích: {dien_tich}
+💰 Giá: {gia}
+📄 Pháp lý: Sổ đỏ chính chủ
+
+👉 Anh/chị muốn đi xem đất trực tiếp không ạ? Em sắp xếp xe đưa đón miễn phí luôn!
+
+=====================================================
+BÀI 5: KHUYẾN MÃI / ƯU ĐÃI
+=====================================================
+
+🎉🎉🎉 ƯU ĐÃI ĐẶC BIỆT - CHỈ TRONG THÁNG NÀY!
+
+Chào anh/chị {ho_ten}!
+
+Nhân dịp {du_an} kỷ niệm mở bán, chủ đầu tư tung chương trình ưu đãi KHỦNG:
+
+🎁 CHIẾT KHẤU lên đến 8% khi thanh toán nhanh
+🎁 TẶNG 2 chỉ vàng SJC cho 10 khách hàng giao dịch đầu tiên
+🎁 HỖ TRỢ VAY ngân hàng 70%, lãi suất 0% trong 12 tháng đầu
+🎁 MIỄN PHÍ sang tên sổ đỏ
+
+📐 Diện tích: {dien_tich}
+💰 Giá gốc CĐT: {gia} (đã bao gồm VAT)
+
+✨ Tính ra chỉ cần bỏ trước 30% là đã sở hữu lô đất nền đẹp tại Sóc Sơn. Phần còn lại ngân hàng lo!
+
+⏰ Ưu đãi chỉ áp dụng đến hết ngày 30 tháng này. Sau thời gian này, giá sẽ về mức niêm yết chính thức.
+
+👉 Inbox em NGAY để nhận bảng giá ưu đãi + đăng ký suất mua trước ạ!
+
+📞 Gọi/Zalo em bất cứ lúc nào - em tư vấn 24/7!
+
+=====================================================
+HƯỚNG DẪN SỬ DỤNG:
+=====================================================
+1. Copy bài đăng phù hợp vào Zalo Tool
+2. Hệ thống sẽ tự động thay thế các biến:
+   - {ho_ten} => Tên khách hàng từ danh sách
+   - {du_an} => Tên dự án cụ thể
+   - {gia} => Giá bán thực tế
+   - {dien_tich} => Diện tích lô đất
+3. Nên gửi vào khung giờ vàng: 7h-9h sáng hoặc 19h-21h tối
+4. Luân phiên các mẫu bài để tránh bị đánh spam
+5. Cá nhân hóa thêm nếu biết thông tin cụ thể của khách
+=====================================================
