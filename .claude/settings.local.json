@@ -80,7 +80,31 @@
       "Bash(npx claude-code-templates@latest --skill document-processing/pptx)",
       "Bash(npx claude-code-templates@latest --skill enterprise-communication/brand-guidelines)",
       "Bash(npx claude-code-templates@latest --skill analytics/google-analytics)",
-      "Bash(npx claude-code-templates@latest --skill business-marketing/pricing-strategy)"
+      "Bash(npx claude-code-templates@latest --skill business-marketing/pricing-strategy)",
+      "Bash(grep -r \"exfiltrate\\\\|malware\\\\|trojan\\\\|backdoor\\\\|command.*execute\\\\|reverse.*shell\" /c/Users/Teamxu89/Desktop/CamScanner-681213085208713/.claude --include=*.py --include=*.json)",
+      "Bash(grep -rE \"\\([0-9]{1,3}\\\\.\\){3}[0-9]{1,3}|http[s]?://[^/\\\\s]+\\\\.[^/\\\\s]+\" /c/Users/Teamxu89/Desktop/CamScanner-681213085208713/.claude --include=*.py --include=*.json --include=*.md)",
+      "Bash(npx claude-code-templates@latest --agent blockchain-web3/web3-integration-specialist)",
+      "Bash(npx claude-code-templates@latest --agent blockchain-web3/smart-contract-specialist)",
+      "Bash(npx claude-code-templates@latest --agent blockchain-web3/smart-contract-auditor)",
+      "Bash(npx claude-code-templates@latest --agent blockchain-web3/blockchain-developer)",
+      "Bash(npx claude-code-templates@latest --agent data-ai/quant-analyst)",
+      "Bash(npx claude-code-templates@latest --agent finance/fintech-engineer)",
+      "Bash(npx claude-code-templates@latest --agent finance/risk-manager)",
+      "Bash(npx claude-code-templates@latest --skill creative-design/frontend-design)",
+      "Bash(npx claude-code-templates@latest --skill creative-design/ui-design-system)",
+      "Bash(npx claude-code-templates@latest --skill creative-design/ui-ux-pro-max)",
+      "Bash(npx claude-code-templates@latest --skill creative-design/canvas-design)",
+      "Bash(npx claude-code-templates@latest --skill creative-design/imagegen)",
+      "Bash(npx claude-code-templates@latest --skill media/image-enhancer)",
+      "Bash(npx claude-code-templates@latest --skill creative-design/theme-factory)",
+      "Bash(npx claude-code-templates@latest --skill creative-design/figma-implement-design)",
+      "Bash(npx claude-code-templates@latest --skill creative-design/3d-web-experience)",
+      "Bash(npx claude-code-templates@latest --skill creative-design/algorithmic-art)",
+      "Bash(npx claude-code-templates@latest --list-skills)",
+      "Bash(npx claude-code-templates@latest --list-agents)",
+      "Bash(npx claude-code-templates@latest --help)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
