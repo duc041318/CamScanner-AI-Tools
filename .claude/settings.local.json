@@ -104,7 +104,12 @@
       "Bash(npx claude-code-templates@latest --list-agents)",
       "Bash(npx claude-code-templates@latest --help)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git remote:*)",
+      "Bash(git push:*)",
+      "Bash(npx claude-code-templates@latest --skill business-marketing/marketing-ideas)",
+      "Bash(npx claude-code-templates@latest --skill productivity/file-organizer)",
+      "Bash(npx claude-code-templates@latest --skill productivity/meeting-insights-analyzer)"
     ]
   }
 }
