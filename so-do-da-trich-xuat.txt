@@ -1,0 +1,43 @@
+=====================================================
+THÔNG TIN SỔ ĐỎ ĐÃ TRÍCH XUẤT
+(Lưu để tham khảo & tránh nhầm lẫn lần sau)
+=====================================================
+
+--- LÔ ĐẤT #1 ---
+Ngày trích xuất: 2026-04-13
+Tọa độ GPS: 21.195500, 105.843867
+
+[THÔNG TIN PHÁP LÝ - SỔ ĐỎ]
+- Số GCN          : 226-3
+- Thửa đất số     : 226
+- Tờ bản đồ số    : 06
+
+[VỊ TRÍ]
+- Thôn            : Tây Đoài
+- Xã              : Phù Lỗ
+- Huyện           : Sóc Sơn
+- Thành phố       : Hà Nội
+
+[DIỆN TÍCH]
+- Tổng diện tích  : 97 m²
+- Đất thổ cư (ở)  : 40 m² (lâu dài)
+- Vườn liền kề    : 57 m²
+
+[MỤC ĐÍCH SỬ DỤNG]
+- Đất ở tại nông thôn (thổ cư): 40 m²
+- Đất vườn liền kề             : 57 m²
+
+[GHI CHÚ TRÍCH XUẤT]
+- Địa chỉ dễ nhầm: Phù Lỗ (KHÔNG phải Phú Diễn)
+- Huyện Sóc Sơn (KHÔNG phải Bắc Từ Liêm)
+- Tổng 97m² gồm 40m² thổ cư + 57m² vườn liền kề
+- Tọa độ thuộc khu vực xã Phù Lỗ, Sóc Sơn ✓
+
+=====================================================
+LƯU Ý KHI TRÍCH XUẤT SỔ ĐỎ LẦN SAU:
+=====================================================
+1. Đọc kỹ phần "Địa chỉ thửa đất" - tên xã/huyện
+2. Phân biệt: Diện tích ĐẤT Ở ≠ Tổng diện tích khuôn viên
+3. Đối chiếu tọa độ GPS với địa chỉ hành chính để xác nhận
+4. Hỏi chủ đất nếu sổ có nhiều mục đích sử dụng khác nhau
+=====================================================
