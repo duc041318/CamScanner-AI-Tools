@@ -101,29 +101,27 @@ def _chay_trong_thread(ten_routine, ham_chay):
     t.start()
 
 
+# ── Hàm wrapper có tên rõ ràng cho từng routine ───────────────────────────────
+def _job_sang():
+    _chay_trong_thread("Gửi Zalo Buổi Sáng", chay_sang)
+
+def _job_toi():
+    _chay_trong_thread("Follow-up Buổi Tối", chay_toi)
+
+def _job_bao_cao():
+    _chay_trong_thread("Báo Cáo Ngày", chay_bao_cao)
+
+def _job_noi_dung():
+    _chay_trong_thread("Làm Mới Nội Dung", chay_noi_dung)
+
+
 # ── Đăng ký lịch ──────────────────────────────────────────────────────────────
 def _dang_ky_lich():
-    # Buổi sáng - mỗi ngày lúc 07:00
-    schedule.every().day.at(LICH_SANG).do(
-        lambda: _chay_trong_thread("Routine Sáng", chay_sang)
-    )
-
-    # Buổi tối follow-up - mỗi ngày lúc 19:30
-    schedule.every().day.at(LICH_TOI).do(
-        lambda: _chay_trong_thread("Routine Tối", chay_toi)
-    )
-
-    # Báo cáo ngày - mỗi ngày lúc 21:00
-    schedule.every().day.at(LICH_BAO_CAO).do(
-        lambda: _chay_trong_thread("Routine Báo Cáo", chay_bao_cao)
-    )
-
-    # Làm mới nội dung - mỗi Thứ Hai lúc 08:00
-    schedule.every().monday.at(LICH_NOI_DUNG).do(
-        lambda: _chay_trong_thread("Routine Nội Dung", chay_noi_dung)
-    )
-
-    _log("OK", f"Đã đăng ký 4 routine thành công.")
+    schedule.every().day.at(LICH_SANG).do(_job_sang)
+    schedule.every().day.at(LICH_TOI).do(_job_toi)
+    schedule.every().day.at(LICH_BAO_CAO).do(_job_bao_cao)
+    schedule.every().monday.at(LICH_NOI_DUNG).do(_job_noi_dung)
+    _log("OK", "Đã đăng ký 4 routine thành công.")
 
 
 def _hien_thi_lich_tiep_theo():
@@ -132,7 +130,10 @@ def _hien_thi_lich_tiep_theo():
     for job in schedule.get_jobs():
         next_run = job.next_run
         if next_run:
-            print(f"  • {next_run.strftime('%d/%m %H:%M')} → {job.job_func.__name__ if hasattr(job.job_func, '__name__') else 'routine'}")
+            ten = getattr(job.job_func, "__name__", "routine").replace("_job_", "")
+            ten_hien = {"sang": "Gửi Zalo Sáng (07:00)", "toi": "Follow-up Tối (19:30)",
+                        "bao_cao": "Báo Cáo (21:00)", "noi_dung": "Làm Mới Nội Dung (Thứ 2 08:00)"}.get(ten, ten)
+            print(f"  • {next_run.strftime('%d/%m/%Y %H:%M')}  →  {ten_hien}")
 
 
 # ── Lệnh thủ công (chạy ngay không cần chờ lịch) ─────────────────────────────
