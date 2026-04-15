@@ -1,0 +1,201 @@
+"""
+RUNNER - Bộ lên lịch tự động cho tất cả Routines BĐS Sóc Sơn
+─────────────────────────────────────────────────────────────
+Chạy file này 1 lần duy nhất, để chạy nền cả ngày:
+
+    cd CamScanner-AI-Tools
+    python routines/runner.py
+
+Lịch tự động:
+    07:00  → Gửi Zalo hàng loạt buổi sáng
+    19:30  → Follow-up khách buổi tối
+    21:00  → Tổng hợp báo cáo ngày
+    Thứ 2  → Làm mới nội dung tuần
+
+Phím tắt khi đang chạy:
+    Ctrl+C → Dừng an toàn
+"""
+
+import sys
+import os
+import time
+import threading
+from datetime import datetime
+
+# Thêm path zalo-tool
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "zalo-tool"))
+
+import schedule
+
+# Import các routine
+from routine_sang import chay as chay_sang
+from routine_toi import chay as chay_toi
+from routine_bao_cao import chay as chay_bao_cao
+from routine_noi_dung import chay as chay_noi_dung
+
+from config import LICH_SANG, LICH_TOI, LICH_BAO_CAO, LICH_NOI_DUNG
+
+
+# ── Màu sắc terminal ──────────────────────────────────────────────────────────
+class Color:
+    HEADER = "\033[95m"
+    BLUE = "\033[94m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    RED = "\033[91m"
+    BOLD = "\033[1m"
+    RESET = "\033[0m"
+
+
+def _banner():
+    print(f"""
+{Color.BOLD}{Color.BLUE}
+╔══════════════════════════════════════════════════════════════╗
+║       ZALO ROUTINE RUNNER - BĐS PHÚ TẰNG SÓC SƠN           ║
+╠══════════════════════════════════════════════════════════════╣
+║  Lịch chạy:                                                 ║
+║   {LICH_SANG}   → Gửi Zalo hàng loạt buổi sáng              ║
+║   {LICH_TOI}  → Follow-up khách buổi tối                  ║
+║   {LICH_BAO_CAO}  → Báo cáo tổng kết ngày                   ║
+║   Thứ 2 {LICH_NOI_DUNG} → Làm mới nội dung tuần              ║
+╠══════════════════════════════════════════════════════════════╣
+║  Nhấn Ctrl+C để dừng an toàn                                ║
+╚══════════════════════════════════════════════════════════════╝
+{Color.RESET}""")
+
+
+def _log(loai, msg):
+    """In log có màu ra console."""
+    mau = {
+        "INFO": Color.BLUE,
+        "OK": Color.GREEN,
+        "WARN": Color.YELLOW,
+        "ERR": Color.RED,
+    }.get(loai, Color.RESET)
+    now = datetime.now().strftime("%H:%M:%S")
+    print(f"{mau}[{now}] [{loai}] {msg}{Color.RESET}")
+
+
+def _chay_an_toan(ten_routine, ham_chay):
+    """Wrapper bắt exception cho mỗi routine."""
+    def _wrapper():
+        _log("INFO", f"Bắt đầu routine: {ten_routine}")
+        try:
+            ok = ham_chay()
+            if ok:
+                _log("OK", f"Hoàn tất: {ten_routine}")
+            else:
+                _log("WARN", f"Routine kết thúc sớm: {ten_routine}")
+        except Exception as e:
+            _log("ERR", f"Lỗi trong routine {ten_routine}: {e}")
+
+    return _wrapper
+
+
+def _chay_trong_thread(ten_routine, ham_chay):
+    """Chạy routine trong thread riêng để không block lịch."""
+    t = threading.Thread(
+        target=_chay_an_toan(ten_routine, ham_chay),
+        daemon=True
+    )
+    t.start()
+
+
+# ── Đăng ký lịch ──────────────────────────────────────────────────────────────
+def _dang_ky_lich():
+    # Buổi sáng - mỗi ngày lúc 07:00
+    schedule.every().day.at(LICH_SANG).do(
+        lambda: _chay_trong_thread("Routine Sáng", chay_sang)
+    )
+
+    # Buổi tối follow-up - mỗi ngày lúc 19:30
+    schedule.every().day.at(LICH_TOI).do(
+        lambda: _chay_trong_thread("Routine Tối", chay_toi)
+    )
+
+    # Báo cáo ngày - mỗi ngày lúc 21:00
+    schedule.every().day.at(LICH_BAO_CAO).do(
+        lambda: _chay_trong_thread("Routine Báo Cáo", chay_bao_cao)
+    )
+
+    # Làm mới nội dung - mỗi Thứ Hai lúc 08:00
+    schedule.every().monday.at(LICH_NOI_DUNG).do(
+        lambda: _chay_trong_thread("Routine Nội Dung", chay_noi_dung)
+    )
+
+    _log("OK", f"Đã đăng ký 4 routine thành công.")
+
+
+def _hien_thi_lich_tiep_theo():
+    """Hiển thị lần chạy tiếp theo của từng job."""
+    print(f"\n{Color.BOLD}Lần chạy tiếp theo:{Color.RESET}")
+    for job in schedule.get_jobs():
+        next_run = job.next_run
+        if next_run:
+            print(f"  • {next_run.strftime('%d/%m %H:%M')} → {job.job_func.__name__ if hasattr(job.job_func, '__name__') else 'routine'}")
+
+
+# ── Lệnh thủ công (chạy ngay không cần chờ lịch) ─────────────────────────────
+def _xu_ly_lenh(lenh):
+    lenh = lenh.strip().lower()
+    if lenh == "sang":
+        _chay_trong_thread("Routine Sáng (thủ công)", chay_sang)
+    elif lenh == "toi":
+        _chay_trong_thread("Routine Tối (thủ công)", chay_toi)
+    elif lenh == "bc":
+        _chay_trong_thread("Báo Cáo (thủ công)", chay_bao_cao)
+    elif lenh == "nd":
+        _chay_trong_thread("Nội Dung (thủ công)", chay_noi_dung)
+    elif lenh == "lich":
+        _hien_thi_lich_tiep_theo()
+    elif lenh == "help":
+        print(f"""
+{Color.BOLD}Lệnh thủ công:{Color.RESET}
+  sang  → Chạy ngay Routine Sáng (gửi Zalo)
+  toi   → Chạy ngay Routine Tối (follow-up)
+  bc    → Chạy ngay Báo Cáo
+  nd    → Chạy ngay Làm Mới Nội Dung
+  lich  → Xem lịch chạy tiếp theo
+  help  → Hiển thị trợ giúp này
+  q     → Thoát
+""")
+    elif lenh in ("q", "quit", "exit"):
+        _log("INFO", "Đang dừng Runner...")
+        sys.exit(0)
+    elif lenh:
+        _log("WARN", f"Lệnh không hợp lệ: '{lenh}'. Gõ 'help' để xem hướng dẫn.")
+
+
+def _vong_lap_nhap_lenh():
+    """Vòng lặp nhận lệnh từ bàn phím trong thread riêng."""
+    while True:
+        try:
+            lenh = input()
+            _xu_ly_lenh(lenh)
+        except (EOFError, KeyboardInterrupt):
+            break
+
+
+# ── Main ──────────────────────────────────────────────────────────────────────
+def main():
+    _banner()
+    _dang_ky_lich()
+    _hien_thi_lich_tiep_theo()
+
+    print(f"\n{Color.GREEN}Runner đang chạy... Gõ 'help' để xem lệnh thủ công.{Color.RESET}\n")
+
+    # Thread nhận lệnh bàn phím
+    lenh_thread = threading.Thread(target=_vong_lap_nhap_lenh, daemon=True)
+    lenh_thread.start()
+
+    # Vòng lặp chính kiểm tra lịch
+    try:
+        while True:
+            schedule.run_pending()
+            time.sleep(30)  # Kiểm tra mỗi 30 giây
+    except KeyboardInterrupt:
+        _log("INFO", "Đã dừng Runner (Ctrl+C). Tạm biệt!")
+
+
+if __name__ == "__main__":
+    main()
