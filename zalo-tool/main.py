@@ -17,6 +17,7 @@ from features.bulk_message import BulkMessageSender
 from features.auto_post import AutoPoster
 from features.add_friend import FriendAdder
 from features.crm import CRMManager, TRANG_THAI_LIST, NHAN_TRANG_THAI, NHAN_NHOM, NHAN_NGUON
+from features.analytics import TemplateAnalytics
 from utils.logger import Logger
 
 
@@ -32,6 +33,7 @@ class ZaloToolApp:
         self.auto_poster = AutoPoster()
         self.friend_adder = FriendAdder()
         self.crm = CRMManager()
+        self.analytics = TemplateAnalytics()
 
         self._build_ui()
 
@@ -60,7 +62,12 @@ class ZaloToolApp:
         self.notebook.add(self.tab_crm, text="  Mini CRM  ")
         self._build_tab_crm()
 
-        # Tab 5: Xem log
+        # Tab 5: Phân tích mẫu bài
+        self.tab_analytics = ttk.Frame(self.notebook)
+        self.notebook.add(self.tab_analytics, text="  Phân tích  ")
+        self._build_tab_analytics()
+
+        # Tab 6: Xem log
         self.tab_log = ttk.Frame(self.notebook)
         self.notebook.add(self.tab_log, text="  Xem Log  ")
         self._build_tab_log()
@@ -716,7 +723,158 @@ class ZaloToolApp:
         self._crm_sort_rev = rev
 
     # ══════════════════════════════════════════════════════════════
-    # TAB 5: XEM LOG
+    # TAB 5: PHÂN TÍCH MẪU BÀI
+    # ══════════════════════════════════════════════════════════════
+
+    def _build_tab_analytics(self):
+        frame = self.tab_analytics
+
+        # ── Tiêu đề + nút làm mới ──
+        top = ttk.Frame(frame)
+        top.pack(fill=tk.X, padx=10, pady=6)
+        ttk.Label(top, text="Hiệu quả từng mẫu bài Zalo",
+                  font=("", 10, "bold")).pack(side=tk.LEFT)
+        ttk.Button(top, text="🔄 Làm mới",
+                   command=self._analytics_load).pack(side=tk.RIGHT)
+        self.analytics_updated_var = tk.StringVar(value="")
+        ttk.Label(top, textvariable=self.analytics_updated_var,
+                  foreground="gray").pack(side=tk.RIGHT, padx=8)
+
+        # ── Bảng hiệu quả ──
+        tree_frame = ttk.Frame(frame)
+        tree_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=4)
+
+        cols = ("mau_id", "preview", "so_gui", "so_pr", "ty_le", "trong_so", "bar")
+        self.an_tree = ttk.Treeview(tree_frame, columns=cols,
+                                    show="headings", height=10)
+        heads = [("ID",70),("Nội dung mẫu (70 ký tự đầu)",340),
+                 ("Đã gửi",65),("Phản hồi",75),("Tỷ lệ",60),
+                 ("Trọng số",75),("Biểu đồ",120)]
+        for (lbl, w), cid in zip(heads, cols):
+            self.an_tree.heading(cid, text=lbl)
+            self.an_tree.column(cid, width=w, anchor=tk.W)
+
+        sb = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL,
+                           command=self.an_tree.yview)
+        self.an_tree.configure(yscrollcommand=sb.set)
+        self.an_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        sb.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.an_tree.tag_configure("top",    background="#e8f5e9")
+        self.an_tree.tag_configure("mid",    background="#fff8e1")
+        self.an_tree.tag_configure("low",    background="#fdecea")
+        self.an_tree.tag_configure("nodata", background="#f5f5f5",
+                                   foreground="#aaaaaa")
+        self.an_tree.bind("<<TreeviewSelect>>", self._analytics_on_select)
+
+        # ── Nội dung mẫu đã chọn ──
+        detail_frame = ttk.LabelFrame(frame,
+                                      text="Nội dung mẫu bài (click vào hàng để xem)",
+                                      padding=4)
+        detail_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=(0,4))
+
+        self.an_detail = scrolledtext.ScrolledText(detail_frame, height=7,
+                                                   wrap=tk.WORD, state=tk.DISABLED,
+                                                   font=("Consolas", 9))
+        self.an_detail.pack(fill=tk.BOTH, expand=True)
+
+        # ── Thanh gợi ý phía dưới ──
+        self.an_tip_var = tk.StringVar(value="")
+        ttk.Label(frame, textvariable=self.an_tip_var,
+                  foreground="#2980b9", font=("", 9, "italic"),
+                  wraplength=760).pack(padx=10, pady=(0,6), anchor=tk.W)
+
+        # Lưu dữ liệu rows để tra cứu khi click
+        self._an_rows = []
+        self._analytics_load()
+
+    # ── Analytics helpers ─────────────────────────────────────────
+
+    def _analytics_load(self):
+        rows = self.analytics.tinh_hieu_qua()
+        self._an_rows = rows
+
+        for item in self.an_tree.get_children():
+            self.an_tree.delete(item)
+
+        if not rows:
+            self.an_tree.insert("", tk.END, tags=("nodata",), values=(
+                "—", "Chưa có dữ liệu. Chạy Routine Sáng ít nhất 1 lần để ghi log.",
+                0, 0, "—", "—", ""
+            ))
+            self.an_tip_var.set(
+                "Chưa có log mẫu bài. Khi Routine Sáng chạy, "
+                "hệ thống tự ghi lại mẫu nào gửi cho ai."
+            )
+            return
+
+        for r in rows:
+            ty_le_pct  = r["ty_le"] * 100
+            trong_so   = r["trong_so"]
+            bar_len    = min(int(r["ty_le"] * 20), 20)
+            bar        = "█" * bar_len + "░" * (20 - bar_len)
+
+            tag = ("top"  if ty_le_pct >= 25 else
+                   "mid"  if ty_le_pct >= 10 else
+                   "nodata" if r["so_gui"] < 5 else "low")
+
+            self.an_tree.insert("", tk.END, iid=r["mau_id"], tags=(tag,), values=(
+                r["mau_id"],
+                r["mau_preview"],
+                r["so_gui"],
+                r["so_phan_hoi"],
+                f"{ty_le_pct:.0f}%",
+                f"{trong_so:.1f}x",
+                bar[:10],
+            ))
+
+        # Tìm mẫu tốt nhất và gợi ý
+        top = rows[0]
+        if top["so_gui"] >= 5:
+            self.an_tip_var.set(
+                f"💡 Mẫu hiệu quả nhất: ID [{top['mau_id']}] "
+                f"— tỷ lệ phản hồi {top['ty_le']*100:.0f}% "
+                f"({top['so_phan_hoi']}/{top['so_gui']} khách). "
+                f"Trọng số {top['trong_so']:.1f}x → được chọn nhiều hơn các mẫu khác."
+            )
+        else:
+            self.an_tip_var.set(
+                f"⏳ Cần thêm dữ liệu. Mỗi mẫu cần gửi ≥5 lần để so sánh "
+                f"đáng tin cậy (hiện tại mẫu nhiều nhất: {top['so_gui']} lần)."
+            )
+
+        from datetime import datetime
+        self.analytics_updated_var.set(
+            f"Cập nhật: {datetime.now().strftime('%H:%M:%S')}"
+        )
+
+    def _analytics_on_select(self, _event=None):
+        sel = self.an_tree.selection()
+        if not sel:
+            return
+        mid = sel[0]
+
+        # Tìm preview trong rows
+        for r in self._an_rows:
+            if r["mau_id"] == mid:
+                preview = r["mau_preview"]
+                break
+        else:
+            preview = mid
+
+        self.an_detail.config(state=tk.NORMAL)
+        self.an_detail.delete("1.0", tk.END)
+        self.an_detail.insert(tk.END,
+            f"ID: {mid}\n"
+            f"{'─'*60}\n"
+            f"{preview}\n"
+            f"{'─'*60}\n"
+            "(Đây là 70 ký tự đầu. Xem file mau-bai-dang-zalo.txt để xem đầy đủ.)"
+        )
+        self.an_detail.config(state=tk.DISABLED)
+
+    # ══════════════════════════════════════════════════════════════
+    # TAB 6: XEM LOG
     # ══════════════════════════════════════════════════════════════
 
     def _build_tab_log(self):

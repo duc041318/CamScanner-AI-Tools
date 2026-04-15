@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(
 from config import CONTACTS_FILE, MAU_BAI_FILE, TEMPLATE_VARS_DEFAULT, DELAY_MIN_SANG, DELAY_MAX_SANG
 from utils.file_reader import read_phone_list, apply_template
 from utils.logger import Logger
+from features.analytics import TemplateAnalytics
 
 
 def _doc_mau_bai(mau_bai_file):
@@ -36,20 +37,23 @@ def _doc_mau_bai(mau_bai_file):
     return bai_list
 
 
-def _chon_mau_bai_ngau_nhien(mau_bai_file):
-    """Chọn ngẫu nhiên 1 mẫu bài từ file."""
+_FALLBACK_MAU = (
+    "Chào {ho_ten},\n\n"
+    "Em đang có lô đất nền đẹp tại {du_an}.\n"
+    "📐 Diện tích: {dien_tich}\n"
+    "💰 Giá chỉ: {gia}\n"
+    "✅ Sổ đỏ chính chủ - Pháp lý sạch\n\n"
+    "Anh/chị quan tâm inbox em nhé!"
+)
+
+
+def _chon_mau_co_trong_so(mau_bai_file):
+    """Chọn mẫu bài theo trọng số hiệu quả lịch sử (fallback về random nếu chưa có data)."""
     bai_list = _doc_mau_bai(mau_bai_file)
     if not bai_list:
-        # Fallback nếu không đọc được file
-        return (
-            "Chào {ho_ten},\n\n"
-            "Em đang có lô đất nền đẹp tại {du_an}.\n"
-            "📐 Diện tích: {dien_tich}\n"
-            "💰 Giá chỉ: {gia}\n"
-            "✅ Sổ đỏ chính chủ - Pháp lý sạch\n\n"
-            "Anh/chị quan tâm inbox em nhé!"
-        )
-    return random.choice(bai_list)
+        return _FALLBACK_MAU, "fallback"
+    template, mid = TemplateAnalytics().chon_mau_co_trong_so(bai_list)
+    return template, mid
 
 
 def _loc_contacts(contacts):
@@ -140,9 +144,9 @@ def chay(log_callback=None):
     if n_hot:
         _log(f"  → Trong đó {n_hot} khách NÓNG (quan_tam/co_phan_hoi) được gửi trước.")
 
-    # 3. Chọn mẫu bài ngẫu nhiên
-    mau = _chon_mau_bai_ngau_nhien(MAU_BAI_FILE)
-    _log(f"Đã chọn mẫu bài: {mau[:60]}...")
+    # 3. Chọn mẫu bài theo trọng số hiệu quả
+    mau, mid = _chon_mau_co_trong_so(MAU_BAI_FILE)
+    _log(f"Đã chọn mẫu bài (ID:{mid}): {mau[:60]}...")
 
     # 4. Ghi thông tin chuẩn bị vào log (trước khi gửi)
     logger.log("routine_sang_chuan_bi", {
@@ -192,7 +196,12 @@ def chay(log_callback=None):
     # 6. Cập nhật ngày liên hệ cuối trong contacts.csv
     _cap_nhat_ngay_lien_he(contacts)
 
-    # 7. Ghi kết quả
+    # 7. Ghi log mẫu bài đã dùng (để phân tích hiệu quả)
+    sdt_da_gui = [c["sdt"] for c in contacts]
+    TemplateAnalytics().ghi_log_gui(mau, sdt_da_gui)
+    _log(f"Đã ghi log mẫu bài {mid} cho {len(sdt_da_gui)} SĐT.")
+
+    # 8. Ghi kết quả
     logger.log("routine_sang_ket_qua", {
         "thoi_gian": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "so_khach": len(contacts),
