@@ -16,6 +16,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from features.bulk_message import BulkMessageSender
 from features.auto_post import AutoPoster
 from features.add_friend import FriendAdder
+from features.crm import CRMManager, TRANG_THAI_LIST, NHAN_TRANG_THAI, NHAN_NHOM, NHAN_NGUON
 from utils.logger import Logger
 
 
@@ -30,6 +31,7 @@ class ZaloToolApp:
         self.bulk_sender = BulkMessageSender()
         self.auto_poster = AutoPoster()
         self.friend_adder = FriendAdder()
+        self.crm = CRMManager()
 
         self._build_ui()
 
@@ -53,7 +55,12 @@ class ZaloToolApp:
         self.notebook.add(self.tab_friend, text="  Kết bạn tự động  ")
         self._build_tab_friend()
 
-        # Tab 4: Xem log
+        # Tab 4: Mini CRM
+        self.tab_crm = ttk.Frame(self.notebook)
+        self.notebook.add(self.tab_crm, text="  Mini CRM  ")
+        self._build_tab_crm()
+
+        # Tab 5: Xem log
         self.tab_log = ttk.Frame(self.notebook)
         self.notebook.add(self.tab_log, text="  Xem Log  ")
         self._build_tab_log()
@@ -433,7 +440,283 @@ class ZaloToolApp:
         self.root.after(0, lambda: self.friend_status.set(message))
 
     # ══════════════════════════════════════════════════════════════
-    # TAB 4: XEM LOG
+    # TAB 4: MINI CRM
+    # ══════════════════════════════════════════════════════════════
+
+    def _build_tab_crm(self):
+        frame = self.tab_crm
+
+        # ── Thanh thống kê nhanh ──
+        self.crm_stats_var = tk.StringVar()
+        lbl_stats = ttk.Label(frame, textvariable=self.crm_stats_var,
+                              font=("", 9, "bold"), foreground="#c0392b")
+        lbl_stats.pack(fill=tk.X, padx=10, pady=(6, 2))
+
+        # ── Bộ lọc ──
+        row_filter = ttk.LabelFrame(frame, text="Bộ lọc", padding=4)
+        row_filter.pack(fill=tk.X, padx=10, pady=2)
+
+        ttk.Label(row_filter, text="Trạng thái:").pack(side=tk.LEFT, padx=(0, 3))
+        ts_options = ["tat_ca"] + TRANG_THAI_LIST
+        ts_labels  = ["-- Tất cả --"] + [NHAN_TRANG_THAI[t] for t in TRANG_THAI_LIST]
+        self.crm_filter_ts = tk.StringVar(value="tat_ca")
+        cb_ts = ttk.Combobox(row_filter, textvariable=self.crm_filter_ts,
+                             values=ts_options, width=16, state="readonly")
+        cb_ts.pack(side=tk.LEFT, padx=(0, 8))
+
+        ttk.Label(row_filter, text="Nhóm:").pack(side=tk.LEFT, padx=(0, 3))
+        nhom_options = ["tat_ca", "muon_o", "dau_tu", "chua_ro"]
+        self.crm_filter_nhom = tk.StringVar(value="tat_ca")
+        cb_nhom = ttk.Combobox(row_filter, textvariable=self.crm_filter_nhom,
+                               values=nhom_options, width=12, state="readonly")
+        cb_nhom.pack(side=tk.LEFT, padx=(0, 8))
+
+        ttk.Label(row_filter, text="Tìm:").pack(side=tk.LEFT, padx=(0, 3))
+        self.crm_search_var = tk.StringVar()
+        self.crm_search_var.trace_add("write", lambda *_: self._crm_load())
+        ttk.Entry(row_filter, textvariable=self.crm_search_var, width=18).pack(side=tk.LEFT, padx=(0, 6))
+
+        ttk.Button(row_filter, text="🔄 Tải lại", command=self._crm_load).pack(side=tk.LEFT)
+
+        cb_ts.bind("<<ComboboxSelected>>", lambda _: self._crm_load())
+        cb_nhom.bind("<<ComboboxSelected>>", lambda _: self._crm_load())
+
+        # ── Bảng danh sách ──
+        tree_frame = ttk.Frame(frame)
+        tree_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=4)
+
+        cols = ("stt", "ho_ten", "sdt", "nhom", "nguon", "trang_thai", "ghi_chu", "ngay_lh")
+        self.crm_tree = ttk.Treeview(tree_frame, columns=cols, show="headings", height=14)
+
+        head = [("#",25),("Họ tên",130),("SĐT",105),("Nhóm",75),
+                ("Nguồn",80),("Trạng thái",100),("Ghi chú",200),("Ngày LH",90)]
+        for (col, w), cid in zip(head, cols):
+            self.crm_tree.heading(cid, text=col,
+                                  command=lambda c=cid: self._crm_sort(c))
+            self.crm_tree.column(cid, width=w, anchor=tk.W)
+
+        sb_y = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL,   command=self.crm_tree.yview)
+        sb_x = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.crm_tree.xview)
+        self.crm_tree.configure(yscrollcommand=sb_y.set, xscrollcommand=sb_x.set)
+        self.crm_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        sb_y.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Màu nền theo trạng thái
+        self.crm_tree.tag_configure("hot",   background="#fdecea")
+        self.crm_tree.tag_configure("warm",  background="#fff8e1")
+        self.crm_tree.tag_configure("coc",   background="#e8f5e9")
+        self.crm_tree.tag_configure("skip",  background="#f5f5f5", foreground="#aaaaaa")
+
+        self.crm_tree.bind("<<TreeviewSelect>>", self._crm_on_select)
+
+        # ── Panel chỉnh sửa ──
+        edit_frame = ttk.LabelFrame(frame, text="Chỉnh sửa khách đã chọn", padding=6)
+        edit_frame.pack(fill=tk.X, padx=10, pady=(0, 6))
+
+        # Hàng 1: tên, SĐT, nhóm
+        r1 = ttk.Frame(edit_frame)
+        r1.pack(fill=tk.X, pady=2)
+
+        ttk.Label(r1, text="Tên:").pack(side=tk.LEFT)
+        self.crm_edit_ten = tk.StringVar()
+        ttk.Entry(r1, textvariable=self.crm_edit_ten, width=18).pack(side=tk.LEFT, padx=(3,10))
+
+        ttk.Label(r1, text="SĐT:").pack(side=tk.LEFT)
+        self.crm_edit_sdt = tk.StringVar()
+        ttk.Entry(r1, textvariable=self.crm_edit_sdt, width=13,
+                  state="readonly").pack(side=tk.LEFT, padx=(3,10))
+
+        ttk.Label(r1, text="Nhóm:").pack(side=tk.LEFT)
+        self.crm_edit_nhom = tk.StringVar()
+        ttk.Combobox(r1, textvariable=self.crm_edit_nhom,
+                     values=["muon_o","dau_tu","chua_ro"],
+                     width=10, state="readonly").pack(side=tk.LEFT, padx=(3,0))
+
+        # Hàng 2: trạng thái, ghi chú, nút
+        r2 = ttk.Frame(edit_frame)
+        r2.pack(fill=tk.X, pady=2)
+
+        ttk.Label(r2, text="Trạng thái:").pack(side=tk.LEFT)
+        self.crm_edit_ts = tk.StringVar()
+        ttk.Combobox(r2, textvariable=self.crm_edit_ts,
+                     values=TRANG_THAI_LIST, width=16,
+                     state="readonly").pack(side=tk.LEFT, padx=(3,10))
+
+        ttk.Label(r2, text="Ghi chú:").pack(side=tk.LEFT)
+        self.crm_edit_ghi_chu = tk.StringVar()
+        ttk.Entry(r2, textvariable=self.crm_edit_ghi_chu,
+                  width=35).pack(side=tk.LEFT, padx=(3,10))
+
+        ttk.Button(r2, text="✅ Cập nhật",
+                   command=self._crm_cap_nhat).pack(side=tk.LEFT, padx=(0,4))
+        ttk.Button(r2, text="📋 Copy SĐT",
+                   command=self._crm_copy_sdt).pack(side=tk.LEFT, padx=(0,4))
+        ttk.Button(r2, text="🗑 Xóa",
+                   command=self._crm_xoa).pack(side=tk.LEFT, padx=(0,4))
+
+        # Hàng 3: thêm khách mới
+        r3 = ttk.LabelFrame(edit_frame, text="Thêm khách mới", padding=4)
+        r3.pack(fill=tk.X, pady=(6,0))
+
+        ttk.Label(r3, text="SĐT:").pack(side=tk.LEFT)
+        self.crm_new_sdt = tk.StringVar()
+        ttk.Entry(r3, textvariable=self.crm_new_sdt, width=13).pack(side=tk.LEFT, padx=(3,8))
+
+        ttk.Label(r3, text="Tên:").pack(side=tk.LEFT)
+        self.crm_new_ten = tk.StringVar()
+        ttk.Entry(r3, textvariable=self.crm_new_ten, width=16).pack(side=tk.LEFT, padx=(3,8))
+
+        ttk.Label(r3, text="Nhóm:").pack(side=tk.LEFT)
+        self.crm_new_nhom = tk.StringVar(value="chua_ro")
+        ttk.Combobox(r3, textvariable=self.crm_new_nhom,
+                     values=["muon_o","dau_tu","chua_ro"],
+                     width=9, state="readonly").pack(side=tk.LEFT, padx=(3,8))
+
+        ttk.Label(r3, text="Nguồn:").pack(side=tk.LEFT)
+        self.crm_new_nguon = tk.StringVar(value="zalo")
+        ttk.Combobox(r3, textvariable=self.crm_new_nguon,
+                     values=["zalo","facebook","gioi_thieu","tu_tim"],
+                     width=11, state="readonly").pack(side=tk.LEFT, padx=(3,8))
+
+        ttk.Button(r3, text="➕ Thêm",
+                   command=self._crm_them_moi).pack(side=tk.LEFT)
+
+        # Tải dữ liệu lần đầu
+        self._crm_load()
+
+    # ── CRM: helpers ──────────────────────────────────────────────
+
+    _crm_sort_col = ""
+    _crm_sort_rev = False
+
+    def _crm_load(self):
+        ts   = self.crm_filter_ts.get()
+        nhom = self.crm_filter_nhom.get()
+        kw   = self.crm_search_var.get().strip()
+
+        rows = self.crm.loc(
+            trang_thai=ts   if ts   != "tat_ca" else None,
+            nhom=nhom       if nhom != "tat_ca" else None,
+            tu_khoa=kw or None,
+        )
+
+        # Xóa bảng cũ
+        for item in self.crm_tree.get_children():
+            self.crm_tree.delete(item)
+
+        for i, r in enumerate(rows, 1):
+            tts = r.get("trang_thai", "moi")
+            tag = ("hot"  if tts in ("quan_tam","co_phan_hoi") else
+                   "warm" if tts in ("xem_dat",) else
+                   "coc"  if tts == "da_coc" else
+                   "skip" if tts == "khong_quan_tam" else "")
+
+            self.crm_tree.insert("", tk.END, iid=r["sdt"], tags=(tag,), values=(
+                i,
+                r.get("ho_ten",""),
+                r.get("sdt",""),
+                NHAN_NHOM.get(r.get("nhom",""), r.get("nhom","")),
+                NHAN_NGUON.get(r.get("nguon",""), r.get("nguon","")),
+                NHAN_TRANG_THAI.get(tts, tts),
+                r.get("ghi_chu",""),
+                r.get("ngay_lien_he_cuoi",""),
+            ))
+
+        # Cập nhật thống kê
+        tk_data = self.crm.thong_ke()
+        self.crm_stats_var.set(
+            f"Tổng: {tk_data['tong']}  |  "
+            f"🔥 Nóng: {tk_data['hot']}  |  "
+            f"👀 Xem đất: {tk_data['tiem_nang']}  |  "
+            f"✅ Đã cọc: {tk_data['da_coc']}  |  "
+            f"📩 Mới: {tk_data['moi']}"
+        )
+
+    def _crm_on_select(self, _event=None):
+        sel = self.crm_tree.selection()
+        if not sel:
+            return
+        sdt = sel[0]
+        rows = self.crm.doc_tat_ca()
+        for r in rows:
+            if r["sdt"] == sdt:
+                self.crm_edit_sdt.set(r["sdt"])
+                self.crm_edit_ten.set(r.get("ho_ten",""))
+                self.crm_edit_nhom.set(r.get("nhom","chua_ro"))
+                self.crm_edit_ts.set(r.get("trang_thai","moi"))
+                self.crm_edit_ghi_chu.set(r.get("ghi_chu",""))
+                break
+
+    def _crm_cap_nhat(self):
+        sdt = self.crm_edit_sdt.get().strip()
+        if not sdt:
+            messagebox.showwarning("Chưa chọn", "Vui lòng chọn 1 khách trong bảng.")
+            return
+        ok = self.crm.cap_nhat(
+            sdt,
+            trang_thai=self.crm_edit_ts.get() or None,
+            ghi_chu=self.crm_edit_ghi_chu.get(),
+            ho_ten=self.crm_edit_ten.get() or None,
+            nhom=self.crm_edit_nhom.get() or None,
+        )
+        if ok:
+            self._crm_load()
+        else:
+            messagebox.showerror("Lỗi", f"Không tìm thấy SĐT: {sdt}")
+
+    def _crm_copy_sdt(self):
+        sdt = self.crm_edit_sdt.get().strip()
+        if sdt:
+            self.root.clipboard_clear()
+            self.root.clipboard_append(sdt)
+            messagebox.showinfo("Đã copy", f"Đã copy SĐT: {sdt}")
+
+    def _crm_xoa(self):
+        sdt = self.crm_edit_sdt.get().strip()
+        if not sdt:
+            messagebox.showwarning("Chưa chọn", "Vui lòng chọn 1 khách trong bảng.")
+            return
+        if messagebox.askyesno("Xác nhận", f"Xóa khách {sdt} khỏi danh sách?"):
+            self.crm.xoa(sdt)
+            self.crm_edit_sdt.set("")
+            self._crm_load()
+
+    def _crm_them_moi(self):
+        sdt = self.crm_new_sdt.get().strip()
+        ten = self.crm_new_ten.get().strip()
+        if not sdt:
+            messagebox.showwarning("Thiếu SĐT", "Vui lòng nhập số điện thoại.")
+            return
+        ok = self.crm.them(
+            sdt, ten,
+            nhom=self.crm_new_nhom.get(),
+            nguon=self.crm_new_nguon.get(),
+        )
+        if ok:
+            self.crm_new_sdt.set("")
+            self.crm_new_ten.set("")
+            self._crm_load()
+        else:
+            messagebox.showwarning("Trùng SĐT", f"SĐT {sdt} đã có trong danh sách.")
+
+    def _crm_sort(self, col):
+        """Sắp xếp bảng khi click vào tiêu đề cột."""
+        col_map = {
+            "stt": 0, "ho_ten": 1, "sdt": 2, "nhom": 3,
+            "nguon": 4, "trang_thai": 5, "ghi_chu": 6, "ngay_lh": 7
+        }
+        idx = col_map.get(col, 0)
+        items = [(self.crm_tree.set(iid, col), iid)
+                 for iid in self.crm_tree.get_children()]
+        rev = (self._crm_sort_col == col and not self._crm_sort_rev)
+        items.sort(key=lambda x: x[0], reverse=rev)
+        for order, (_, iid) in enumerate(items):
+            self.crm_tree.move(iid, "", order)
+        self._crm_sort_col = col
+        self._crm_sort_rev = rev
+
+    # ══════════════════════════════════════════════════════════════
+    # TAB 5: XEM LOG
     # ══════════════════════════════════════════════════════════════
 
     def _build_tab_log(self):
