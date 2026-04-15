@@ -1,4 +1,37 @@
-sdt,ho_ten,du_an,gia
-0912345678,Anh Minh,Đất nền Sóc Sơn,1.2 tỷ
-0987654321,Chị Lan,KĐT Phú Cát,850 triệu
-0901234567,Anh Hùng,Đất nền Bắc Sơn,1.5 tỷ
+sdt,ho_ten,nhom,nguon,trang_thai,ghi_chu,ngay_them,ngay_lien_he_cuoi
+0912345678,Anh Minh,dau_tu,zalo,quan_tam,Hỏi về lô 2 góc - cần xem thực tế,2026-04-10,2026-04-14
+0987654321,Chị Lan,muon_o,facebook,quan_tam,Đồng ý xem đất cuối tuần,2026-04-11,2026-04-15
+0901234567,Anh Hùng,dau_tu,gioi_thieu,da_gui,,2026-04-12,2026-04-13
+0903111222,Chị Hoa,muon_o,zalo,moi,,2026-04-15,
+0908222333,Anh Tuấn,dau_tu,facebook,moi,,2026-04-15,
+0912333444,Chị Mai,chua_ro,zalo,moi,,2026-04-14,
+0935444555,Anh Phong,dau_tu,gioi_thieu,moi,Bạn anh Minh giới thiệu,2026-04-14,
+0978555666,Chị Ngọc,muon_o,zalo,moi,,2026-04-13,
+0909666777,Anh Đức,dau_tu,facebook,moi,,2026-04-13,
+0362777888,Chị Thảo,muon_o,zalo,moi,,2026-04-12,
+0345888999,Anh Bình,dau_tu,tu_tim,da_gui,,2026-04-12,2026-04-12
+0376999000,Chị Yến,chua_ro,zalo,moi,,2026-04-11,
+0388000111,Anh Khoa,muon_o,facebook,moi,,2026-04-11,
+0399111222,Chị Linh,dau_tu,gioi_thieu,moi,Chị gái anh Hùng,2026-04-10,
+0356222333,Anh Tùng,dau_tu,zalo,co_phan_hoi,Quan tâm lô 1 - hỏi về pháp lý,2026-04-10,2026-04-13
+0358333444,Chị Hằng,muon_o,facebook,moi,,2026-04-09,
+0359444555,Anh Long,dau_tu,tu_tim,da_gui,,2026-04-09,2026-04-09
+0361555666,Chị Thu,muon_o,zalo,moi,,2026-04-08,
+0363666777,Anh Dũng,chua_ro,facebook,moi,,2026-04-08,
+0365777888,Chị Hiền,muon_o,gioi_thieu,moi,Hàng xóm chị Lan,2026-04-07,
+0367888999,Anh Cường,dau_tu,zalo,moi,,2026-04-07,
+0369999000,Chị Vân,dau_tu,facebook,da_gui,,2026-04-06,2026-04-06
+0371000111,Anh Sơn,muon_o,tu_tim,moi,,2026-04-06,
+0373111222,Chị Phương,chua_ro,zalo,moi,,2026-04-05,
+0375222333,Anh Việt,dau_tu,gioi_thieu,quan_tam,Muốn mua cả 2 lô - hỏi giá combo,2026-04-05,2026-04-14
+0377333444,Chị Quỳnh,muon_o,facebook,moi,,2026-04-04,
+0379444555,Anh Nam,dau_tu,zalo,moi,,2026-04-04,
+0381555666,Chị Nga,muon_o,tu_tim,da_gui,,2026-04-03,2026-04-03
+0383666777,Anh Hải,chua_ro,facebook,moi,,2026-04-03,
+0385777888,Chị Loan,muon_o,zalo,moi,,2026-04-02,
+0387888999,Anh Trung,dau_tu,gioi_thieu,moi,Đồng nghiệp anh Việt,2026-04-02,
+0389999000,Chị Diệu,dau_tu,facebook,moi,,2026-04-01,
+0391000111,Anh Thắng,muon_o,zalo,khong_quan_tam,Đã mua đất nơi khác,2026-04-01,2026-04-10
+0393111222,Chị Nhung,chua_ro,tu_tim,moi,,2026-03-31,
+0395222333,Anh Quang,dau_tu,facebook,moi,,2026-03-31,
+0911999888,Chị Bích,dau_tu,gioi_thieu,moi,Bạn anh Việt,2026-04-15,

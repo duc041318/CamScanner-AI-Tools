@@ -52,6 +52,56 @@ def _chon_mau_bai_ngau_nhien(mau_bai_file):
     return random.choice(bai_list)
 
 
+def _loc_contacts(contacts):
+    """
+    Lọc danh sách theo trạng thái:
+    - Bỏ qua: khong_quan_tam, da_coc (không cần liên hệ nữa)
+    - Ưu tiên đầu: quan_tam, co_phan_hoi (khách nóng)
+    - Còn lại: moi, da_gui (chưa/đã liên hệ)
+    """
+    bo_qua = {"khong_quan_tam", "da_coc", "xem_dat"}
+    uu_tien = []
+    binh_thuong = []
+
+    for c in contacts:
+        ts = c.get("trang_thai", "moi").strip()
+        if ts in bo_qua:
+            continue
+        if ts in ("quan_tam", "co_phan_hoi"):
+            uu_tien.append(c)
+        else:
+            binh_thuong.append(c)
+
+    return uu_tien + binh_thuong
+
+
+def _cap_nhat_ngay_lien_he(contacts_gui):
+    """Cập nhật ngày_lien_he_cuoi cho các số vừa gửi."""
+    import csv as _csv
+    hom_nay = datetime.now().strftime("%Y-%m-%d")
+    sdt_da_gui = {c["sdt"] for c in contacts_gui}
+
+    if not os.path.exists(CONTACTS_FILE):
+        return
+
+    all_rows = []
+    with open(CONTACTS_FILE, "r", encoding="utf-8-sig") as f:
+        reader = _csv.DictReader(f)
+        headers = reader.fieldnames
+        all_rows = list(reader)
+
+    for row in all_rows:
+        if row["sdt"] in sdt_da_gui:
+            row["ngay_lien_he_cuoi"] = hom_nay
+            if row.get("trang_thai") == "moi":
+                row["trang_thai"] = "da_gui"
+
+    with open(CONTACTS_FILE, "w", encoding="utf-8", newline="") as f:
+        writer = _csv.DictWriter(f, fieldnames=headers)
+        writer.writeheader()
+        writer.writerows(all_rows)
+
+
 def chay(log_callback=None):
     """Chạy routine buổi sáng: gửi tin Zalo hàng loạt."""
     logger = Logger()
@@ -69,17 +119,26 @@ def chay(log_callback=None):
         _log(f"KHÔNG TÌM THẤY file contacts: {CONTACTS_FILE}")
         return False
 
-    # 2. Đọc danh sách khách
+    # 2. Đọc và lọc danh sách khách
     try:
-        contacts = read_phone_list(CONTACTS_FILE)
-        _log(f"Đọc được {len(contacts)} khách hàng từ file.")
+        tat_ca = read_phone_list(CONTACTS_FILE)
+        _log(f"Tổng danh sách: {len(tat_ca)} khách.")
     except Exception as e:
         _log(f"Lỗi đọc danh sách: {e}")
         return False
 
+    contacts = _loc_contacts(tat_ca)
+    bo_qua = len(tat_ca) - len(contacts)
+    _log(f"Sẽ gửi: {len(contacts)} khách (bỏ qua {bo_qua} đã cọc/không quan tâm).")
+
     if not contacts:
-        _log("Danh sách khách trống, bỏ qua.")
+        _log("Không còn khách để gửi.")
         return False
+
+    # Phân loại để log rõ hơn
+    n_hot = sum(1 for c in contacts if c.get("trang_thai") in ("quan_tam", "co_phan_hoi"))
+    if n_hot:
+        _log(f"  → Trong đó {n_hot} khách NÓNG (quan_tam/co_phan_hoi) được gửi trước.")
 
     # 3. Chọn mẫu bài ngẫu nhiên
     mau = _chon_mau_bai_ngau_nhien(MAU_BAI_FILE)
@@ -130,7 +189,10 @@ def chay(log_callback=None):
     if thread:
         thread.join(timeout=3600)  # Tối đa 1 giờ
 
-    # 6. Ghi kết quả
+    # 6. Cập nhật ngày liên hệ cuối trong contacts.csv
+    _cap_nhat_ngay_lien_he(contacts)
+
+    # 7. Ghi kết quả
     logger.log("routine_sang_ket_qua", {
         "thoi_gian": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "so_khach": len(contacts),
