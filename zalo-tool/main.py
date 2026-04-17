@@ -16,6 +16,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from features.bulk_message import BulkMessageSender
 from features.auto_post import AutoPoster
 from features.add_friend import FriendAdder
+from features.calendar_reminder import CalendarReminder
 from utils.logger import Logger
 
 
@@ -30,8 +31,10 @@ class ZaloToolApp:
         self.bulk_sender = BulkMessageSender()
         self.auto_poster = AutoPoster()
         self.friend_adder = FriendAdder()
+        self.calendar = CalendarReminder()
 
         self._build_ui()
+        self.calendar.start_reminder(self._on_reminder_alert)
 
     def _build_ui(self):
         # Notebook (tabs)
@@ -53,7 +56,12 @@ class ZaloToolApp:
         self.notebook.add(self.tab_friend, text="  Kết bạn tự động  ")
         self._build_tab_friend()
 
-        # Tab 4: Xem log
+        # Tab 4: Lịch hẹn
+        self.tab_calendar = ttk.Frame(self.notebook)
+        self.notebook.add(self.tab_calendar, text="  Lịch hẹn  ")
+        self._build_tab_calendar()
+
+        # Tab 5: Xem log
         self.tab_log = ttk.Frame(self.notebook)
         self.notebook.add(self.tab_log, text="  Xem Log  ")
         self._build_tab_log()
@@ -513,6 +521,150 @@ class ZaloToolApp:
         # Thêm dữ liệu
         for row in rows:
             self.log_tree.insert("", tk.END, values=[row.get(h, "") for h in headers])
+
+
+    # ══════════════════════════════════════════════════════════════
+    # TAB 4: LỊCH HẸN & NHẮC NHỞ
+    # ══════════════════════════════════════════════════════════════
+
+    def _build_tab_calendar(self):
+        frame = self.tab_calendar
+
+        # ── Thêm cuộc hẹn ──
+        row_add = ttk.LabelFrame(frame, text="Thêm cuộc hẹn mới", padding=5)
+        row_add.pack(fill=tk.X, padx=10, pady=5)
+
+        ttk.Label(row_add, text="Ngày (DD/MM/YYYY):").grid(row=0, column=0, sticky=tk.W, padx=5, pady=2)
+        self.cal_date = tk.StringVar(value=datetime.now().strftime("%d/%m/%Y"))
+        ttk.Entry(row_add, textvariable=self.cal_date, width=14).grid(row=0, column=1, sticky=tk.W, padx=5)
+
+        ttk.Label(row_add, text="Giờ (HH:MM):").grid(row=0, column=2, sticky=tk.W, padx=5)
+        self.cal_time = tk.StringVar(value="08:00")
+        ttk.Entry(row_add, textvariable=self.cal_time, width=8).grid(row=0, column=3, sticky=tk.W, padx=5)
+
+        ttk.Label(row_add, text="Tiêu đề:").grid(row=1, column=0, sticky=tk.W, padx=5, pady=2)
+        self.cal_title = tk.StringVar()
+        ttk.Entry(row_add, textvariable=self.cal_title, width=50).grid(row=1, column=1, columnspan=3, sticky=tk.W+tk.E, padx=5)
+
+        ttk.Label(row_add, text="Ghi chú:").grid(row=2, column=0, sticky=tk.W, padx=5, pady=2)
+        self.cal_note = tk.StringVar()
+        ttk.Entry(row_add, textvariable=self.cal_note, width=50).grid(row=2, column=1, columnspan=3, sticky=tk.W+tk.E, padx=5)
+
+        row_add.columnconfigure(1, weight=1)
+
+        btn_row = ttk.Frame(row_add)
+        btn_row.grid(row=3, column=0, columnspan=4, sticky=tk.W, pady=5, padx=5)
+        ttk.Button(btn_row, text="+ Thêm hẹn", command=self._cal_add).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_row, text="Xem hôm nay", command=self._cal_filter_today).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_row, text="Xem tất cả", command=self._cal_show_all).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_row, text="Xóa hẹn đã chọn", command=self._cal_delete).pack(side=tk.LEFT, padx=5)
+
+        # ── Danh sách cuộc hẹn ──
+        list_frame = ttk.LabelFrame(frame, text="Danh sách cuộc hẹn (nhắc trước 1 tiếng)", padding=5)
+        list_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+        cols = ("id", "ngay", "gio", "tieu_de", "ghi_chu", "nhac")
+        self.cal_tree = ttk.Treeview(list_frame, columns=cols, show="headings", height=12)
+        self.cal_tree.heading("id", text="ID")
+        self.cal_tree.heading("ngay", text="Ngày")
+        self.cal_tree.heading("gio", text="Giờ")
+        self.cal_tree.heading("tieu_de", text="Tiêu đề")
+        self.cal_tree.heading("ghi_chu", text="Ghi chú")
+        self.cal_tree.heading("nhac", text="Đã nhắc")
+
+        self.cal_tree.column("id", width=30)
+        self.cal_tree.column("ngay", width=90)
+        self.cal_tree.column("gio", width=55)
+        self.cal_tree.column("tieu_de", width=300)
+        self.cal_tree.column("ghi_chu", width=150)
+        self.cal_tree.column("nhac", width=70)
+
+        sb = ttk.Scrollbar(list_frame, orient=tk.VERTICAL, command=self.cal_tree.yview)
+        self.cal_tree.configure(yscrollcommand=sb.set)
+        self.cal_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        sb.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.cal_status = tk.StringVar(value="Nhắc nhở đang chạy nền - popup xuất hiện trước 1 tiếng")
+        ttk.Label(frame, textvariable=self.cal_status, foreground="green").pack(padx=10, pady=3, anchor=tk.W)
+
+        self._cal_show_all()
+
+    def _cal_refresh(self, appointments):
+        for item in self.cal_tree.get_children():
+            self.cal_tree.delete(item)
+        for a in appointments:
+            try:
+                display_date = datetime.strptime(a.date, "%Y-%m-%d").strftime("%d/%m/%Y")
+            except ValueError:
+                display_date = a.date
+            self.cal_tree.insert("", tk.END, values=(
+                a.id,
+                display_date,
+                a.time_str,
+                a.title,
+                a.note,
+                "Rồi" if a.reminded else "Chưa",
+            ))
+
+    def _cal_show_all(self):
+        self._cal_refresh(self.calendar.get_all_sorted())
+
+    def _cal_filter_today(self):
+        today = datetime.now().strftime("%Y-%m-%d")
+        self._cal_refresh(self.calendar.get_by_date(today))
+
+    def _cal_add(self):
+        date_raw = self.cal_date.get().strip()
+        time_raw = self.cal_time.get().strip()
+        title = self.cal_title.get().strip()
+        note = self.cal_note.get().strip()
+
+        if not title:
+            messagebox.showwarning("Thiếu thông tin", "Vui lòng nhập tiêu đề cuộc hẹn.")
+            return
+
+        try:
+            date_obj = datetime.strptime(date_raw, "%d/%m/%Y")
+            date_iso = date_obj.strftime("%Y-%m-%d")
+        except ValueError:
+            messagebox.showerror("Lỗi", "Ngày không hợp lệ. Dùng DD/MM/YYYY (ví dụ: 17/04/2026)")
+            return
+
+        try:
+            datetime.strptime(time_raw, "%H:%M")
+        except ValueError:
+            messagebox.showerror("Lỗi", "Giờ không hợp lệ. Dùng HH:MM (ví dụ: 10:00)")
+            return
+
+        self.calendar.add(date_iso, time_raw, title, note)
+        self.cal_title.set("")
+        self.cal_note.set("")
+        self._cal_show_all()
+        self.cal_status.set(f"Đã lưu: {title} lúc {time_raw} ngày {date_raw}")
+
+    def _cal_delete(self):
+        selected = self.cal_tree.selection()
+        if not selected:
+            messagebox.showinfo("Thông báo", "Chọn cuộc hẹn muốn xóa.")
+            return
+        for item in selected:
+            appt_id = int(self.cal_tree.item(item)["values"][0])
+            self.calendar.delete(appt_id)
+        self._cal_show_all()
+
+    def _on_reminder_alert(self, appt):
+        try:
+            display_date = datetime.strptime(appt.date, "%Y-%m-%d").strftime("%d/%m/%Y")
+        except ValueError:
+            display_date = appt.date
+        msg = (
+            f"NHẮC NHỞ LỊCH HẸN\n\n"
+            f"Tiêu đề: {appt.title}\n"
+            f"Thời gian: {appt.time_str} ngày {display_date}\n"
+            f"Ghi chú: {appt.note}\n\n"
+            f"Còn 1 tiếng nữa đến giờ hẹn!"
+        )
+        self.root.after(0, lambda: messagebox.showinfo("Nhắc lịch hẹn", msg))
 
 
 def main():

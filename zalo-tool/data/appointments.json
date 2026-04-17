@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "date": "2026-04-17",
+    "time": "10:00",
+    "title": "Gặp chú Huy bán đất ngõ đá",
+    "note": "Nhắc nhở lúc 09:00",
+    "reminded": false
+  },
+  {
+    "id": 2,
+    "date": "2026-04-17",
+    "time": "14:00",
+    "title": "Làm xác nhận tình trạng hôn nhân cho bà Sáu",
+    "note": "Nhắc nhở lúc 13:00",
+    "reminded": false
+  },
+  {
+    "id": 3,
+    "date": "2026-04-17",
+    "time": "18:00",
+    "title": "Tiếp khách tại quán bia",
+    "note": "Nhắc nhở lúc 17:00",
+    "reminded": false
+  }
+]
