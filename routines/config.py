@@ -54,4 +54,5 @@ DELAY_MAX_TOI = 40
 LICH_SANG = "07:00"
 LICH_TOI = "19:30"
 LICH_BAO_CAO = "21:00"
+LICH_DANG_BAI = "12:00"   # Đăng bài Feed Zalo
 LICH_NOI_DUNG = "08:00"   # Thứ Hai

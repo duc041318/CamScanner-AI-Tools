@@ -173,6 +173,14 @@ Dự án: Phú Tằng - Đa Phúc - Sóc Sơn (Lô 1: 1.66 tỷ | Lô 2 góc: 2.
     # In ra console
     print(bao_cao)
 
+    # Tạo dashboard HTML
+    try:
+        from routine_dashboard import chay as chay_dashboard
+        dashboard_path = chay_dashboard(log_callback=log_callback)
+        _log(f"Dashboard HTML: {dashboard_path}")
+    except Exception as e:
+        _log(f"Cảnh báo: Không tạo được dashboard: {e}")
+
     return bao_cao_file
 
 
