@@ -109,7 +109,9 @@
       "Bash(git push:*)",
       "Bash(npx claude-code-templates@latest --skill business-marketing/marketing-ideas)",
       "Bash(npx claude-code-templates@latest --skill productivity/file-organizer)",
-      "Bash(npx claude-code-templates@latest --skill productivity/meeting-insights-analyzer)"
+      "Bash(npx claude-code-templates@latest --skill productivity/meeting-insights-analyzer)",
+      "mcp__8ed3059f-ac92-4263-89cc-9d9d3601991d__hf_whoami",
+      "mcp__8ed3059f-ac92-4263-89cc-9d9d3601991d__hf_hub_query"
     ]
   }
 }
