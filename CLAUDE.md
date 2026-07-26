@@ -6,7 +6,8 @@ Personal toolkit for a real-estate broker business (đất nền / land-lot sale
 
 - `zalo-tool/` — the only code project in this repo. A Tkinter desktop app that automates Zalo PC via UI automation (no official Zalo API).
 - `ke-hoach-ban-dat-30-ngay.txt`, `mau-bai-dang-zalo.txt` — business content (30-day sales plan, message/post templates) for the Sóc Sơn land-lot listings. Reference these when drafting Zalo copy so tone and facts (lot sizes, prices, location) stay consistent.
-- `.claude/agents/`, `.claude/skills/` — a broad, mostly generic set of subagents/skills (marketing, legal, fintech, OCR, web3, etc.) installed for this account, not curated specifically for this repo. Only a few are actually relevant here: `python-pro`, `debugger`, `code-reviewer`, `document-structure-analyzer`/`ocr-*` (if OCR work resumes), `content-marketer`/`social-media-copywriter` (for Zalo post copy). Don't assume the rest apply.
+- `.claude/agents/` — a broad, mostly generic set of subagents (marketing, legal, fintech, OCR, web3, etc.) installed for this account, not curated specifically for this repo. Only a few are actually relevant here: `python-pro`, `debugger`, `code-reviewer`, `document-structure-analyzer`/`ocr-*` (if OCR work resumes). Don't assume the rest apply.
+- `.claude/skills/` — project-specific skills for `zalo-tool`, one per recurring content task: `tin-nhan-hang-loat` (bulk message copy), `dang-bai-zalo` (Timeline post copy), `loi-moi-ket-ban` (friend-request greeting), `chuan-hoa-danh-sach-sdt` (turn a raw contact list into the `.txt`/`.csv` format `utils/file_reader.py` expects). These generate content/files to feed into the tool — they don't drive the Zalo UI automation itself (that requires a live Windows session with Zalo open, which Claude Code can't do remotely).
 
 ## `zalo-tool/`
 
@@ -33,4 +34,4 @@ Automates three flows against the Zalo PC desktop client using `pyautogui` + `py
 
 - When asked to add a new Zalo automation feature, follow the existing `features/*.py` pattern and wire it into a new tab in `main.py`.
 - When asked for Zalo post/message copy, check `mau-bai-dang-zalo.txt` and `ke-hoach-ban-dat-30-ngay.txt` first for the actual lot details and existing tone, rather than inventing generic real-estate copy.
-- Recurring manual tasks (e.g., generating a new batch of message variations, drafting a listing report) are good candidates for a `.claude/skills/` skill — see `bao-gia-dat-nen` for the existing pattern.
+- Recurring manual tasks (e.g., generating a new batch of message variations, drafting a listing report) are good candidates for a new `.claude/skills/` skill — follow the pattern in `tin-nhan-hang-loat`/`dang-bai-zalo`: frontmatter with `name` + a `description` listing trigger keywords, then step-by-step instructions in Vietnamese that point at the actual repo files (`ke-hoach-ban-dat-30-ngay.txt`, `mau-bai-dang-zalo.txt`, `utils/file_reader.py`) instead of generic advice.
