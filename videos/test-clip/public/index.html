@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face {
+        font-family: "Inter";
+        src: url("fonts/Inter-400-latin.woff2") format("woff2");
+        font-weight: 400;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "Inter";
+        src: url("fonts/Inter-700-latin.woff2") format("woff2");
+        font-weight: 700;
+        font-display: block;
+      }
+
+      :root {
+        --bg: #1a1a1a;
+        --text: #f1f1f1;
+        --accent-0: #4cc9f0;
+        --accent-1: #f72585;
+        --accent-2: #4ade80;
+        --accent-3: #fb923c;
+        --accent-4: #a78bfa;
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+        background: #000;
+        font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+      }
+      #stage { position: relative; width: 100%; height: 100%; overflow: hidden; }
+
+      .video-wrapper {
+        position: absolute; left: 0; top: 0; width: 1080px; height: 1920px;
+        overflow: hidden; border-radius: 0; box-shadow: none;
+      }
+      .video-wrapper video { width: 100%; height: 100%; object-fit: cover; }
+
+      .card-host { position: absolute; pointer-events: none; overflow: hidden; }
+      .card-host .card { position: relative; width: 100%; height: 100%; overflow: hidden; }
+      .card-host .char { display: inline-block; visibility: visible; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="stage"
+      data-composition-id="talking-head-recut"
+      data-start="0"
+      data-duration="59.0"
+      data-fps="30"
+      data-width="1080"
+      data-height="1920"
+    >
+      <div class="video-wrapper" id="video-wrap">
+        <video
+          id="bg-video"
+          src="input-video.mp4"
+          muted
+          playsinline
+          data-start="0"
+          data-duration="59.0"
+          data-track-index="1"
+        ></video>
+      </div>
+      <audio
+        id="source-audio"
+        src="input-video.mp4"
+        data-start="0"
+        data-duration="59.0"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div id="host-card-01" class="card-host clip" data-card-id="card-01" data-start="0.0000" data-duration="7.0000" data-track-index="2"
+        style="left:0;top:0;width:1080px;height:1920px;visibility:hidden;opacity:0;">
+        <div class="card" data-card-id="card-01">
+  <style>
+    .card[data-card-id="card-01"] .root {
+      width: 100%; height: 100%; position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      box-sizing: border-box; padding: 0 56px 160px 56px;
+      color: var(--text); font-family: 'Inter', sans-serif;
+    }
+    .card[data-card-id="card-01"] .scrim {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 68%;
+      background: linear-gradient(to top, rgba(8,8,10,1) 0%, rgba(8,8,10,1) 40%, rgba(8,8,10,0.65) 60%, rgba(8,8,10,0) 100%);
+      pointer-events: none;
+    }
+    .card[data-card-id="card-01"] .content { position: relative; z-index: 1; }
+    .card[data-card-id="card-01"] .meta { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .card[data-card-id="card-01"] .dot {
+      width: 12px; height: 12px; border-radius: 50%; background: var(--accent-0);
+      box-shadow: 0 0 20px var(--accent-0), 0 0 6px var(--accent-0);
+    }
+    .card[data-card-id="card-01"] .kicker {
+      font: 700 20px/1 'Inter', sans-serif; letter-spacing: 0.22em; color: var(--accent-0); text-transform: uppercase;
+    }
+    .card[data-card-id="card-01"] .title {
+      margin: 0 0 14px 0; font: 800 84px/1.16 'Inter', sans-serif; color: var(--text);
+      text-shadow: 0 4px 40px rgba(0,0,0,0.6);
+    }
+    .card[data-card-id="card-01"] .title .word { display: inline-block; white-space: nowrap; }
+    .card[data-card-id="card-01"] .detail {
+      margin: 0; font: 500 34px/1.4 'Inter', sans-serif; color: #cfcfd6;
+    }
+    .card[data-card-id="card-01"] .bar {
+      margin-top: 22px; height: 8px; width: 0; border-radius: 4px; background: var(--accent-0);
+      box-shadow: 0 0 16px var(--accent-0);
+    }
+  </style>
+
+  <div class="root">
+    <div class="scrim"></div>
+    <div class="content">
+      <div class="meta">
+        <span class="dot" data-anim="scale-pop" data-anim-at="0.05" data-anim-duration="0.4"></span>
+        <span class="kicker" data-anim="fade-in" data-anim-at="0.1" data-anim-duration="0.4">MỞ ĐẦU</span>
+      </div>
+      <h1 id="card-01-title" class="title"
+        data-anim="kinetic-chars" data-anim-at="0.3" data-anim-duration="0.6" data-anim-stagger="0.025" data-anim-pattern="pop">
+        <span class="word"><span class="char">“</span><span class="char">M</span><span class="char">ấ</span><span class="char">y</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">n</span><span class="char">ă</span><span class="char">m</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">r</span><span class="char">ồ</span><span class="char">i</span><span class="char">…</span><span class="char">”</span></span>
+      </h1>
+      <p class="detail" data-anim="fade-in" data-anim-at="1.1" data-anim-duration="0.5">tôi đang nghĩ…</p>
+      <div id="card-01-bar" class="bar" data-anim="grow-x" data-anim-at="0.9" data-anim-duration="0.5" data-anim-target-w="120"></div>
+    </div>
+  </div>
+</div>
+      </div>
+      <div id="host-card-02" class="card-host clip" data-card-id="card-02" data-start="7.0000" data-duration="8.0000" data-track-index="2"
+        style="left:0;top:0;width:1080px;height:1920px;visibility:hidden;opacity:0;">
+        <div class="card" data-card-id="card-02">
+  <style>
+    .card[data-card-id="card-02"] .root {
+      width: 100%; height: 100%; position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      box-sizing: border-box; padding: 0 56px 160px 56px;
+      color: var(--text); font-family: 'Inter', sans-serif;
+    }
+    .card[data-card-id="card-02"] .scrim {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 68%;
+      background: linear-gradient(to top, rgba(8,8,10,1) 0%, rgba(8,8,10,1) 40%, rgba(8,8,10,0.65) 60%, rgba(8,8,10,0) 100%);
+      pointer-events: none;
+    }
+    .card[data-card-id="card-02"] .content { position: relative; z-index: 1; }
+    .card[data-card-id="card-02"] .meta { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .card[data-card-id="card-02"] .dot {
+      width: 12px; height: 12px; border-radius: 50%; background: var(--accent-1);
+      box-shadow: 0 0 20px var(--accent-1), 0 0 6px var(--accent-1);
+    }
+    .card[data-card-id="card-02"] .kicker {
+      font: 700 20px/1 'Inter', sans-serif; letter-spacing: 0.22em; color: var(--accent-1); text-transform: uppercase;
+    }
+    .card[data-card-id="card-02"] .title {
+      margin: 0 0 14px 0; font: 800 84px/1.16 'Inter', sans-serif; color: var(--text);
+      text-shadow: 0 4px 40px rgba(0,0,0,0.6);
+    }
+    .card[data-card-id="card-02"] .title .word { display: inline-block; white-space: nowrap; }
+    .card[data-card-id="card-02"] .detail {
+      margin: 0; font: 500 34px/1.4 'Inter', sans-serif; color: #cfcfd6;
+    }
+    .card[data-card-id="card-02"] .bar {
+      margin-top: 22px; height: 8px; width: 0; border-radius: 4px; background: var(--accent-1);
+      box-shadow: 0 0 16px var(--accent-1);
+    }
+  </style>
+
+  <div class="root">
+    <div class="scrim"></div>
+    <div class="content">
+      <div class="meta">
+        <span class="dot" data-anim="scale-pop" data-anim-at="0.05" data-anim-duration="0.4"></span>
+        <span class="kicker" data-anim="fade-in" data-anim-at="0.1" data-anim-duration="0.4">GIA ĐÌNH</span>
+      </div>
+      <h1 id="card-02-title" class="title"
+        data-anim="kinetic-chars" data-anim-at="0.3" data-anim-duration="0.6" data-anim-stagger="0.025" data-anim-pattern="pop">
+        <span class="word"><span class="char">“</span><span class="char">V</span><span class="char">ợ</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">t</span><span class="char">ô</span><span class="char">i</span><span class="char">,</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">m</span><span class="char">ẹ</span><span class="char">…</span><span class="char">”</span></span>
+      </h1>
+      <p class="detail" data-anim="fade-in" data-anim-at="1.1" data-anim-duration="0.5">“kiểu con là… nghèo”</p>
+      <div id="card-02-bar" class="bar" data-anim="grow-x" data-anim-at="0.9" data-anim-duration="0.5" data-anim-target-w="120"></div>
+    </div>
+  </div>
+</div>
+      </div>
+      <div id="host-card-03" class="card-host clip" data-card-id="card-03" data-start="15.0000" data-duration="6.0000" data-track-index="2"
+        style="left:0;top:0;width:1080px;height:1920px;visibility:hidden;opacity:0;">
+        <div class="card" data-card-id="card-03">
+  <style>
+    .card[data-card-id="card-03"] .root {
+      width: 100%; height: 100%; position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      box-sizing: border-box; padding: 0 56px 160px 56px;
+      color: var(--text); font-family: 'Inter', sans-serif;
+    }
+    .card[data-card-id="card-03"] .scrim {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 68%;
+      background: linear-gradient(to top, rgba(8,8,10,1) 0%, rgba(8,8,10,1) 40%, rgba(8,8,10,0.65) 60%, rgba(8,8,10,0) 100%);
+      pointer-events: none;
+    }
+    .card[data-card-id="card-03"] .content { position: relative; z-index: 1; }
+    .card[data-card-id="card-03"] .meta { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .card[data-card-id="card-03"] .dot {
+      width: 12px; height: 12px; border-radius: 50%; background: var(--accent-2);
+      box-shadow: 0 0 20px var(--accent-2), 0 0 6px var(--accent-2);
+    }
+    .card[data-card-id="card-03"] .kicker {
+      font: 700 20px/1 'Inter', sans-serif; letter-spacing: 0.22em; color: var(--accent-2); text-transform: uppercase;
+    }
+    .card[data-card-id="card-03"] .title {
+      margin: 0 0 14px 0; font: 800 84px/1.16 'Inter', sans-serif; color: var(--text);
+      text-shadow: 0 4px 40px rgba(0,0,0,0.6);
+    }
+    .card[data-card-id="card-03"] .title .word { display: inline-block; white-space: nowrap; }
+    .card[data-card-id="card-03"] .detail {
+      margin: 0; font: 500 34px/1.4 'Inter', sans-serif; color: #cfcfd6;
+    }
+    .card[data-card-id="card-03"] .bar {
+      margin-top: 22px; height: 8px; width: 0; border-radius: 4px; background: var(--accent-2);
+      box-shadow: 0 0 16px var(--accent-2);
+    }
+  </style>
+
+  <div class="root">
+    <div class="scrim"></div>
+    <div class="content">
+      <div class="meta">
+        <span class="dot" data-anim="scale-pop" data-anim-at="0.05" data-anim-duration="0.4"></span>
+        <span class="kicker" data-anim="fade-in" data-anim-at="0.1" data-anim-duration="0.4">NHỊP SỐNG</span>
+      </div>
+      <h1 id="card-03-title" class="title"
+        data-anim="kinetic-chars" data-anim-at="0.3" data-anim-duration="0.6" data-anim-stagger="0.025" data-anim-pattern="pop">
+        <span class="word"><span class="char">“</span><span class="char">N</span><span class="char">g</span><span class="char">à</span><span class="char">y</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">t</span><span class="char">h</span><span class="char">ì</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">t</span><span class="char">h</span><span class="char">ứ</span><span class="char">c</span><span class="char">…</span><span class="char">”</span></span>
+      </h1>
+      <p class="detail" data-anim="fade-in" data-anim-at="1.1" data-anim-duration="0.5">ly trà sữa thứ 2</p>
+      <div id="card-03-bar" class="bar" data-anim="grow-x" data-anim-at="0.9" data-anim-duration="0.5" data-anim-target-w="120"></div>
+    </div>
+  </div>
+</div>
+      </div>
+      <div id="host-card-04" class="card-host clip" data-card-id="card-04" data-start="21.0000" data-duration="7.5000" data-track-index="2"
+        style="left:0;top:0;width:1080px;height:1920px;visibility:hidden;opacity:0;">
+        <div class="card" data-card-id="card-04">
+  <style>
+    .card[data-card-id="card-04"] .root {
+      width: 100%; height: 100%; position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      box-sizing: border-box; padding: 0 56px 160px 56px;
+      color: var(--text); font-family: 'Inter', sans-serif;
+    }
+    .card[data-card-id="card-04"] .scrim {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 68%;
+      background: linear-gradient(to top, rgba(8,8,10,1) 0%, rgba(8,8,10,1) 40%, rgba(8,8,10,0.65) 60%, rgba(8,8,10,0) 100%);
+      pointer-events: none;
+    }
+    .card[data-card-id="card-04"] .content { position: relative; z-index: 1; }
+    .card[data-card-id="card-04"] .meta { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .card[data-card-id="card-04"] .dot {
+      width: 12px; height: 12px; border-radius: 50%; background: var(--accent-3);
+      box-shadow: 0 0 20px var(--accent-3), 0 0 6px var(--accent-3);
+    }
+    .card[data-card-id="card-04"] .kicker {
+      font: 700 20px/1 'Inter', sans-serif; letter-spacing: 0.22em; color: var(--accent-3); text-transform: uppercase;
+    }
+    .card[data-card-id="card-04"] .title {
+      margin: 0 0 14px 0; font: 800 84px/1.16 'Inter', sans-serif; color: var(--text);
+      text-shadow: 0 4px 40px rgba(0,0,0,0.6);
+    }
+    .card[data-card-id="card-04"] .title .word { display: inline-block; white-space: nowrap; }
+    .card[data-card-id="card-04"] .detail {
+      margin: 0; font: 500 34px/1.4 'Inter', sans-serif; color: #cfcfd6;
+    }
+    .card[data-card-id="card-04"] .bar {
+      margin-top: 22px; height: 8px; width: 0; border-radius: 4px; background: var(--accent-3);
+      box-shadow: 0 0 16px var(--accent-3);
+    }
+  </style>
+
+  <div class="root">
+    <div class="scrim"></div>
+    <div class="content">
+      <div class="meta">
+        <span class="dot" data-anim="scale-pop" data-anim-at="0.05" data-anim-duration="0.4"></span>
+        <span class="kicker" data-anim="fade-in" data-anim-at="0.1" data-anim-duration="0.4">ĐÊM VỀ</span>
+      </div>
+      <h1 id="card-04-title" class="title"
+        data-anim="kinetic-chars" data-anim-at="0.3" data-anim-duration="0.6" data-anim-stagger="0.025" data-anim-pattern="pop">
+        <span class="word"><span class="char">“</span><span class="char">Đ</span><span class="char">ê</span><span class="char">m</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">t</span><span class="char">h</span><span class="char">ì</span><span class="char">…</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">n</span><span class="char">ợ</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">t</span><span class="char">h</span><span class="char">ì</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">đ</span><span class="char">ầ</span><span class="char">m</span><span class="char">”</span></span>
+      </h1>
+      <p class="detail" data-anim="fade-in" data-anim-at="1.1" data-anim-duration="0.5">“trần nhà mà…”</p>
+      <div id="card-04-bar" class="bar" data-anim="grow-x" data-anim-at="0.9" data-anim-duration="0.5" data-anim-target-w="120"></div>
+    </div>
+  </div>
+</div>
+      </div>
+      <div id="host-card-05" class="card-host clip" data-card-id="card-05" data-start="28.5000" data-duration="7.0000" data-track-index="2"
+        style="left:0;top:0;width:1080px;height:1920px;visibility:hidden;opacity:0;">
+        <div class="card" data-card-id="card-05">
+  <style>
+    .card[data-card-id="card-05"] .root {
+      width: 100%; height: 100%; position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      box-sizing: border-box; padding: 0 56px 160px 56px;
+      color: var(--text); font-family: 'Inter', sans-serif;
+    }
+    .card[data-card-id="card-05"] .scrim {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 68%;
+      background: linear-gradient(to top, rgba(8,8,10,1) 0%, rgba(8,8,10,1) 40%, rgba(8,8,10,0.65) 60%, rgba(8,8,10,0) 100%);
+      pointer-events: none;
+    }
+    .card[data-card-id="card-05"] .content { position: relative; z-index: 1; }
+    .card[data-card-id="card-05"] .meta { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .card[data-card-id="card-05"] .dot {
+      width: 12px; height: 12px; border-radius: 50%; background: var(--accent-4);
+      box-shadow: 0 0 20px var(--accent-4), 0 0 6px var(--accent-4);
+    }
+    .card[data-card-id="card-05"] .kicker {
+      font: 700 20px/1 'Inter', sans-serif; letter-spacing: 0.22em; color: var(--accent-4); text-transform: uppercase;
+    }
+    .card[data-card-id="card-05"] .title {
+      margin: 0 0 14px 0; font: 800 84px/1.16 'Inter', sans-serif; color: var(--text);
+      text-shadow: 0 4px 40px rgba(0,0,0,0.6);
+    }
+    .card[data-card-id="card-05"] .title .word { display: inline-block; white-space: nowrap; }
+    .card[data-card-id="card-05"] .detail {
+      margin: 0; font: 500 34px/1.4 'Inter', sans-serif; color: #cfcfd6;
+    }
+    .card[data-card-id="card-05"] .bar {
+      margin-top: 22px; height: 8px; width: 0; border-radius: 4px; background: var(--accent-4);
+      box-shadow: 0 0 16px var(--accent-4);
+    }
+  </style>
+
+  <div class="root">
+    <div class="scrim"></div>
+    <div class="content">
+      <div class="meta">
+        <span class="dot" data-anim="scale-pop" data-anim-at="0.05" data-anim-duration="0.4"></span>
+        <span class="kicker" data-anim="fade-in" data-anim-at="0.1" data-anim-duration="0.4">NGHI NGỜ</span>
+      </div>
+      <h1 id="card-05-title" class="title"
+        data-anim="kinetic-chars" data-anim-at="0.3" data-anim-duration="0.6" data-anim-stagger="0.025" data-anim-pattern="pop">
+        <span class="word"><span class="char">“</span><span class="char">C</span><span class="char">ư</span><span class="char">ờ</span><span class="char">i</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">đ</span><span class="char">ấ</span><span class="char">y</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">k</span><span class="char">h</span><span class="char">ô</span><span class="char">n</span><span class="char">g</span><span class="char">?</span><span class="char">”</span></span>
+      </h1>
+      <p class="detail" data-anim="fade-in" data-anim-at="1.1" data-anim-duration="0.5">“nào nó lừa…”</p>
+      <div id="card-05-bar" class="bar" data-anim="grow-x" data-anim-at="0.9" data-anim-duration="0.5" data-anim-target-w="120"></div>
+    </div>
+  </div>
+</div>
+      </div>
+      <div id="host-card-06" class="card-host clip" data-card-id="card-06" data-start="35.5000" data-duration="9.0000" data-track-index="2"
+        style="left:0;top:0;width:1080px;height:1920px;visibility:hidden;opacity:0;">
+        <div class="card" data-card-id="card-06">
+  <style>
+    .card[data-card-id="card-06"] .root {
+      width: 100%; height: 100%; position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      box-sizing: border-box; padding: 0 56px 160px 56px;
+      color: var(--text); font-family: 'Inter', sans-serif;
+    }
+    .card[data-card-id="card-06"] .scrim {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 68%;
+      background: linear-gradient(to top, rgba(8,8,10,1) 0%, rgba(8,8,10,1) 40%, rgba(8,8,10,0.65) 60%, rgba(8,8,10,0) 100%);
+      pointer-events: none;
+    }
+    .card[data-card-id="card-06"] .content { position: relative; z-index: 1; }
+    .card[data-card-id="card-06"] .meta { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .card[data-card-id="card-06"] .dot {
+      width: 12px; height: 12px; border-radius: 50%; background: var(--accent-0);
+      box-shadow: 0 0 20px var(--accent-0), 0 0 6px var(--accent-0);
+    }
+    .card[data-card-id="card-06"] .kicker {
+      font: 700 20px/1 'Inter', sans-serif; letter-spacing: 0.22em; color: var(--accent-0); text-transform: uppercase;
+    }
+    .card[data-card-id="card-06"] .title {
+      margin: 0 0 14px 0; font: 800 84px/1.16 'Inter', sans-serif; color: var(--text);
+      text-shadow: 0 4px 40px rgba(0,0,0,0.6);
+    }
+    .card[data-card-id="card-06"] .title .word { display: inline-block; white-space: nowrap; }
+    .card[data-card-id="card-06"] .detail {
+      margin: 0; font: 500 34px/1.4 'Inter', sans-serif; color: #cfcfd6;
+    }
+    .card[data-card-id="card-06"] .bar {
+      margin-top: 22px; height: 8px; width: 0; border-radius: 4px; background: var(--accent-0);
+      box-shadow: 0 0 16px var(--accent-0);
+    }
+  </style>
+
+  <div class="root">
+    <div class="scrim"></div>
+    <div class="content">
+      <div class="meta">
+        <span class="dot" data-anim="scale-pop" data-anim-at="0.05" data-anim-duration="0.4"></span>
+        <span class="kicker" data-anim="fade-in" data-anim-at="0.1" data-anim-duration="0.4">GIẰNG CO</span>
+      </div>
+      <h1 id="card-06-title" class="title"
+        data-anim="kinetic-chars" data-anim-at="0.3" data-anim-duration="0.6" data-anim-stagger="0.025" data-anim-pattern="pop">
+        <span class="word"><span class="char">“</span><span class="char">G</span><span class="char">i</span><span class="char">ờ</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">m</span><span class="char">à</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">b</span><span class="char">ỏ</span><span class="char">…</span><span class="char">”</span></span>
+      </h1>
+      
+      <div id="card-06-bar" class="bar" data-anim="grow-x" data-anim-at="0.9" data-anim-duration="0.5" data-anim-target-w="120"></div>
+    </div>
+  </div>
+</div>
+      </div>
+      <div id="host-card-07" class="card-host clip" data-card-id="card-07" data-start="44.5000" data-duration="7.5000" data-track-index="2"
+        style="left:0;top:0;width:1080px;height:1920px;visibility:hidden;opacity:0;">
+        <div class="card" data-card-id="card-07">
+  <style>
+    .card[data-card-id="card-07"] .root {
+      width: 100%; height: 100%; position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      box-sizing: border-box; padding: 0 56px 160px 56px;
+      color: var(--text); font-family: 'Inter', sans-serif;
+    }
+    .card[data-card-id="card-07"] .scrim {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 68%;
+      background: linear-gradient(to top, rgba(8,8,10,1) 0%, rgba(8,8,10,1) 40%, rgba(8,8,10,0.65) 60%, rgba(8,8,10,0) 100%);
+      pointer-events: none;
+    }
+    .card[data-card-id="card-07"] .content { position: relative; z-index: 1; }
+    .card[data-card-id="card-07"] .meta { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .card[data-card-id="card-07"] .dot {
+      width: 12px; height: 12px; border-radius: 50%; background: var(--accent-1);
+      box-shadow: 0 0 20px var(--accent-1), 0 0 6px var(--accent-1);
+    }
+    .card[data-card-id="card-07"] .kicker {
+      font: 700 20px/1 'Inter', sans-serif; letter-spacing: 0.22em; color: var(--accent-1); text-transform: uppercase;
+    }
+    .card[data-card-id="card-07"] .title {
+      margin: 0 0 14px 0; font: 800 84px/1.16 'Inter', sans-serif; color: var(--text);
+      text-shadow: 0 4px 40px rgba(0,0,0,0.6);
+    }
+    .card[data-card-id="card-07"] .title .word { display: inline-block; white-space: nowrap; }
+    .card[data-card-id="card-07"] .detail {
+      margin: 0; font: 500 34px/1.4 'Inter', sans-serif; color: #cfcfd6;
+    }
+    .card[data-card-id="card-07"] .bar {
+      margin-top: 22px; height: 8px; width: 0; border-radius: 4px; background: var(--accent-1);
+      box-shadow: 0 0 16px var(--accent-1);
+    }
+  </style>
+
+  <div class="root">
+    <div class="scrim"></div>
+    <div class="content">
+      <div class="meta">
+        <span class="dot" data-anim="scale-pop" data-anim-at="0.05" data-anim-duration="0.4"></span>
+        <span class="kicker" data-anim="fade-in" data-anim-at="0.1" data-anim-duration="0.4">SUY NGHĨ LẠI</span>
+      </div>
+      <h1 id="card-07-title" class="title"
+        data-anim="kinetic-chars" data-anim-at="0.3" data-anim-duration="0.6" data-anim-stagger="0.025" data-anim-pattern="pop">
+        <span class="word"><span class="char">“</span><span class="char">N</span><span class="char">g</span><span class="char">h</span><span class="char">ĩ</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">n</span><span class="char">ó</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">l</span><span class="char">ạ</span><span class="char">i</span><span class="char">…</span><span class="char">”</span></span>
+      </h1>
+      <p class="detail" data-anim="fade-in" data-anim-at="1.1" data-anim-duration="0.5">“nay mai mà ra nó chỉ…”</p>
+      <div id="card-07-bar" class="bar" data-anim="grow-x" data-anim-at="0.9" data-anim-duration="0.5" data-anim-target-w="120"></div>
+    </div>
+  </div>
+</div>
+      </div>
+      <div id="host-card-08" class="card-host clip" data-card-id="card-08" data-start="52.0000" data-duration="7.0000" data-track-index="2"
+        style="left:0;top:0;width:1080px;height:1920px;visibility:hidden;opacity:0;">
+        <div class="card" data-card-id="card-08">
+  <style>
+    .card[data-card-id="card-08"] .root {
+      width: 100%; height: 100%; position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      box-sizing: border-box; padding: 0 56px 160px 56px;
+      color: var(--text); font-family: 'Inter', sans-serif;
+    }
+    .card[data-card-id="card-08"] .scrim {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 68%;
+      background: linear-gradient(to top, rgba(8,8,10,1) 0%, rgba(8,8,10,1) 40%, rgba(8,8,10,0.65) 60%, rgba(8,8,10,0) 100%);
+      pointer-events: none;
+    }
+    .card[data-card-id="card-08"] .content { position: relative; z-index: 1; }
+    .card[data-card-id="card-08"] .meta { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .card[data-card-id="card-08"] .dot {
+      width: 12px; height: 12px; border-radius: 50%; background: var(--accent-2);
+      box-shadow: 0 0 20px var(--accent-2), 0 0 6px var(--accent-2);
+    }
+    .card[data-card-id="card-08"] .kicker {
+      font: 700 20px/1 'Inter', sans-serif; letter-spacing: 0.22em; color: var(--accent-2); text-transform: uppercase;
+    }
+    .card[data-card-id="card-08"] .title {
+      margin: 0 0 14px 0; font: 800 84px/1.16 'Inter', sans-serif; color: var(--text);
+      text-shadow: 0 4px 40px rgba(0,0,0,0.6);
+    }
+    .card[data-card-id="card-08"] .title .word { display: inline-block; white-space: nowrap; }
+    .card[data-card-id="card-08"] .detail {
+      margin: 0; font: 500 34px/1.4 'Inter', sans-serif; color: #cfcfd6;
+    }
+    .card[data-card-id="card-08"] .bar {
+      margin-top: 22px; height: 8px; width: 0; border-radius: 4px; background: var(--accent-2);
+      box-shadow: 0 0 16px var(--accent-2);
+    }
+  </style>
+
+  <div class="root">
+    <div class="scrim"></div>
+    <div class="content">
+      <div class="meta">
+        <span class="dot" data-anim="scale-pop" data-anim-at="0.05" data-anim-duration="0.4"></span>
+        <span class="kicker" data-anim="fade-in" data-anim-at="0.1" data-anim-duration="0.4">KẾT</span>
+      </div>
+      <h1 id="card-08-title" class="title"
+        data-anim="kinetic-chars" data-anim-at="0.3" data-anim-duration="0.6" data-anim-stagger="0.025" data-anim-pattern="pop">
+        <span class="word"><span class="char">“</span><span class="char">L</span><span class="char">o</span><span class="char">ạ</span><span class="char">i</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">đ</span><span class="char">à</span><span class="char">n</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">ô</span><span class="char">n</span><span class="char">g</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">h</span><span class="char">á</span><span class="char">m</span></span> <span class="char">&nbsp;</span><span class="word"><span class="char">t</span><span class="char">i</span><span class="char">ề</span><span class="char">n</span><span class="char">”</span></span>
+      </h1>
+      <p class="detail" data-anim="fade-in" data-anim-at="1.1" data-anim-duration="0.5">“thấy có tiền…”</p>
+      <div id="card-08-bar" class="bar" data-anim="grow-x" data-anim-at="0.9" data-anim-duration="0.5" data-anim-target-w="120"></div>
+    </div>
+  </div>
+</div>
+      </div>
+
+      <script src="vendor/gsap.min.js"></script>
+      <script>
+        (function () {
+          const tl = window.gsap.timeline({ paused: true });
+
+          function enterExit(id, start, end) {
+            tl.set('.card-host[data-card-id="' + id + '"]', { visibility: "visible" }, start);
+            tl.fromTo(
+              '.card-host[data-card-id="' + id + '"]',
+              { opacity: 0 },
+              { opacity: 1, duration: 0.4, ease: "power2.out" },
+              start
+            );
+            tl.to(
+              '.card-host[data-card-id="' + id + '"]',
+              { opacity: 0, duration: 0.35, ease: "power2.in" },
+              end - 0.35
+            );
+            tl.set('.card-host[data-card-id="' + id + '"]', { visibility: "hidden" }, end);
+          }
+
+          // card-01 [0.0, 7.0]
+          enterExit("card-01", 0.0, 7.0);
+          tl.from('.card[data-card-id="card-01"] #card-01-title .char', { opacity: 0, y: 8, scale: 0.8, duration: 0.6, ease: "power2.out", stagger: 0.025 }, 0.3);
+          tl.fromTo('.card[data-card-id="card-01"] #card-01-bar', { width: 0 }, { width: 120, duration: 0.5, ease: "power2.out" }, 0.9);
+
+          // card-02 [7.0, 15.0]
+          enterExit("card-02", 7.0, 15.0);
+          tl.from('.card[data-card-id="card-02"] #card-02-title .char', { opacity: 0, y: 8, scale: 0.8, duration: 0.6, ease: "power2.out", stagger: 0.025 }, 7.3);
+          tl.fromTo('.card[data-card-id="card-02"] #card-02-bar', { width: 0 }, { width: 120, duration: 0.5, ease: "power2.out" }, 7.9);
+
+          // card-03 [15.0, 21.0]
+          enterExit("card-03", 15.0, 21.0);
+          tl.from('.card[data-card-id="card-03"] #card-03-title .char', { opacity: 0, y: 8, scale: 0.8, duration: 0.6, ease: "power2.out", stagger: 0.025 }, 15.3);
+          tl.fromTo('.card[data-card-id="card-03"] #card-03-bar', { width: 0 }, { width: 120, duration: 0.5, ease: "power2.out" }, 15.9);
+
+          // card-04 [21.0, 28.5]
+          enterExit("card-04", 21.0, 28.5);
+          tl.from('.card[data-card-id="card-04"] #card-04-title .char', { opacity: 0, y: 8, scale: 0.8, duration: 0.6, ease: "power2.out", stagger: 0.025 }, 21.3);
+          tl.fromTo('.card[data-card-id="card-04"] #card-04-bar', { width: 0 }, { width: 120, duration: 0.5, ease: "power2.out" }, 21.9);
+
+          // card-05 [28.5, 35.5]
+          enterExit("card-05", 28.5, 35.5);
+          tl.from('.card[data-card-id="card-05"] #card-05-title .char', { opacity: 0, y: 8, scale: 0.8, duration: 0.6, ease: "power2.out", stagger: 0.025 }, 28.8);
+          tl.fromTo('.card[data-card-id="card-05"] #card-05-bar', { width: 0 }, { width: 120, duration: 0.5, ease: "power2.out" }, 29.4);
+
+          // card-06 [35.5, 44.5]
+          enterExit("card-06", 35.5, 44.5);
+          tl.from('.card[data-card-id="card-06"] #card-06-title .char', { opacity: 0, y: 8, scale: 0.8, duration: 0.6, ease: "power2.out", stagger: 0.025 }, 35.8);
+          tl.fromTo('.card[data-card-id="card-06"] #card-06-bar', { width: 0 }, { width: 120, duration: 0.5, ease: "power2.out" }, 36.4);
+
+          // card-07 [44.5, 52.0]
+          enterExit("card-07", 44.5, 52.0);
+          tl.from('.card[data-card-id="card-07"] #card-07-title .char', { opacity: 0, y: 8, scale: 0.8, duration: 0.6, ease: "power2.out", stagger: 0.025 }, 44.8);
+          tl.fromTo('.card[data-card-id="card-07"] #card-07-bar', { width: 0 }, { width: 120, duration: 0.5, ease: "power2.out" }, 45.4);
+
+          // card-08 [52.0, 59.0]
+          enterExit("card-08", 52.0, 59.0);
+          tl.from('.card[data-card-id="card-08"] #card-08-title .char', { opacity: 0, y: 8, scale: 0.8, duration: 0.6, ease: "power2.out", stagger: 0.025 }, 52.3);
+          tl.fromTo('.card[data-card-id="card-08"] #card-08-bar', { width: 0 }, { width: 120, duration: 0.5, ease: "power2.out" }, 52.9);
+
+          window.__timelines = window.__timelines || {};
+          window.__timelines["talking-head-recut"] = tl;
+        })();
+      </script>
+    </div>
+  </body>
+</html>
